@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=Noto+Sans+Tamil&family=Noto+Sans+Telugu&family=Noto+Sans+Kannada&family=Noto+Sans+Bengali&family=Noto+Nastaliq+Urdu&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #ffffff;
+  --primary: #00E599; /* Luminous green */
+  --primary-glow: rgba(0, 229, 153, 0.4);
 }
 
 @theme inline {
@@ -12,15 +15,73 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: radial-gradient(circle at 15% 50%, rgba(0, 229, 153, 0.08), transparent 50%),
+              radial-gradient(circle at 85% 30%, rgba(0, 184, 255, 0.08), transparent 50%),
+              #050505;
+  background-attachment: fixed;
+  color: var(--foreground);
+  font-family: 'Inter', Arial, sans-serif;
+  min-height: 100vh;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Luminous Glass Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+.neon-text {
+  color: var(--primary);
+  text-shadow: 0 0 10px var(--primary-glow);
+}
+
+/* --- RTL Support --- */
+[dir="rtl"] { 
+  direction: rtl; 
+  text-align: right; 
+  font-family: 'Noto Nastaliq Urdu', serif, system-ui !important;
+}
+
+[dir="rtl"] .flex-row { 
+  flex-direction: row-reverse; 
+}
+
+[dir="rtl"] nav { 
+  flex-direction: row-reverse; 
+}
+
+[dir="rtl"] .user-bubble { 
+  margin-left: 0 !important; 
+  margin-right: auto !important; 
+}
+
+[dir="rtl"] .ai-bubble { 
+  margin-right: 0 !important; 
+  margin-left: auto !important; 
+}
+
+/* Fix margins for icons and layout in RTL */
+[dir="rtl"] .mr-1 { margin-right: 0 !important; margin-left: 0.25rem !important; }
+[dir="rtl"] .ml-1 { margin-left: 0 !important; margin-right: 0.25rem !important; }
+[dir="rtl"] .mr-2 { margin-right: 0 !important; margin-left: 0.5rem !important; }
+[dir="rtl"] .ml-2 { margin-left: 0 !important; margin-right: 0.5rem !important; }
+[dir="rtl"] .mr-3 { margin-right: 0 !important; margin-left: 0.75rem !important; }
+[dir="rtl"] .ml-3 { margin-left: 0 !important; margin-right: 0.75rem !important; }
+[dir="rtl"] .mr-4 { margin-right: 0 !important; margin-left: 1rem !important; }
+[dir="rtl"] .ml-4 { margin-left: 0 !important; margin-right: 1rem !important; }
+[dir="rtl"] .mr-6 { margin-right: 0 !important; margin-left: 1.5rem !important; }
+[dir="rtl"] .ml-6 { margin-left: 0 !important; margin-right: 1.5rem !important; }
+[dir="rtl"] .pr-2 { padding-right: 0 !important; padding-left: 0.5rem !important; }
+[dir="rtl"] .pl-2 { padding-left: 0 !important; padding-right: 0.5rem !important; }
+[dir="rtl"] .pr-4 { padding-right: 0 !important; padding-left: 1rem !important; }
+[dir="rtl"] .pl-4 { padding-left: 0 !important; padding-right: 1rem !important; }
+
+@media print {
+  body { 
+    font-family: 'Noto Sans Devanagari', 'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Kannada', 'Noto Sans Bengali', 'Noto Nastaliq Urdu', sans-serif !important; 
+  }
 }

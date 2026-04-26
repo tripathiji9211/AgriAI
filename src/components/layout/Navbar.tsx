@@ -1,30 +1,49 @@
+"use client";
+
 import Link from "next/link";
-import { Leaf, Menu, Bell, User } from "lucide-react";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { Leaf, Globe, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useGlobalLanguage } from "@/lib/LanguageContext";
 
 export default function Navbar() {
+  const { t } = useGlobalLanguage();
+
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2">
-          <Leaf className="h-6 w-6 text-green-600" />
-          <span className="text-xl font-bold text-green-800">AgriAI</span>
+    <nav className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white">
+      <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+        
+        {/* Left: Brand */}
+        <Link href="/" className="flex items-center gap-2 shrink-0">
+          <Leaf className="h-7 w-7 text-[#0f4c3a]" />
+          <span className="font-bold text-2xl tracking-tight text-gray-900">{t.appName}</span>
         </Link>
-        <div className="hidden md:flex gap-6 items-center">
-          <Link href="/dashboard" className="text-sm font-medium text-gray-600 hover:text-green-600">Dashboard</Link>
-          <Link href="/scanner" className="text-sm font-medium text-gray-600 hover:text-green-600">Scanner</Link>
-          <Link href="/advisor" className="text-sm font-medium text-gray-600 hover:text-green-600">Advisor</Link>
+
+        {/* Center: Navigation Links */}
+        <div className="hidden lg:flex items-center gap-8">
+          <Link href="/scanner" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">{t.nav_detection}</Link>
+          <Link href="/prediction" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">{t.nav_prediction}</Link>
+          <Link href="/sustainability" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">{t.nav_sustainability}</Link>
+          <Link href="/advisor" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">{t.nav_chatbot}</Link>
+          <Link href="/recommend" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">{t.nav_recommender}</Link>
+          <Link href="/iot" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">{t.nav_iot}</Link>
+          <Link href="/mandi" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">{t.nav_mandi}</Link>
+          <Link href="/reports" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">{t.nav_reports}</Link>
         </div>
-        <div className="flex items-center gap-4">
-          <button className="text-gray-500 hover:text-green-600">
-            <Bell className="h-5 w-5" />
-          </button>
-          <Link href="/login" className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-green-700">
-            <User className="h-4 w-4" />
+
+        {/* Right: Language & Button */}
+        <div className="flex items-center gap-6">
+          <div className="hidden md:block">
+            <LanguageSelector />
+          </div>
+          
+          <Link href="/login">
+            <Button className="bg-[#0f4c3a] hover:bg-[#0a3629] text-white rounded-lg px-6 py-2.5 h-auto text-sm font-medium shadow-sm">
+              {t.btn_get_started}
+            </Button>
           </Link>
-          <button className="md:hidden text-gray-500">
-            <Menu className="h-6 w-6" />
-          </button>
         </div>
+        
       </div>
     </nav>
   );
