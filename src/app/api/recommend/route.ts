@@ -8,7 +8,8 @@ export async function POST(req: Request) {
     await new Promise(resolve => setTimeout(resolve, 1500));
 
     // Call the Python ML Backend
-    const mlResponse = await fetch("http://localhost:8000/api/recommend", {
+    const backendUrl = process.env.ML_BACKEND_URL || "http://localhost:8000";
+    const mlResponse = await fetch(`${backendUrl}/api/recommend`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

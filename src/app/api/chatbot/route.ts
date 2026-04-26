@@ -8,9 +8,21 @@ export async function POST(req: Request) {
     const { message, history, detection_history, langCode } = await req.json();
 
     if (!groqKey) {
-      return NextResponse.json({
-        response: `AgriAI is currently in offline mode. Please check your OPENSOURCE_API_KEY.`
-      });
+      // Mock Response Fallback if no Groq key is provided (Common in Vercel preview/initial setup)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const lowerMsg = message.toLowerCase();
+      let response = "I'm currently in basic mode because the API key is not configured. However, I can still provide general agricultural advice.";
+      
+      if (lowerMsg.includes("disease") || lowerMsg.includes("blight")) {
+        response = "For diseases like blight, ensure good air circulation and avoid overhead watering. Use organic copper-based sprays if needed.";
+      } else if (lowerMsg.includes("soil") || lowerMsg.includes("fertilizer")) {
+        response = "To improve soil health, consider crop rotation and adding organic compost or neem cake. Testing your soil's pH is also recommended.";
+      } else if (lowerMsg.includes("harvest")) {
+        response = "Harvest timing depends on the crop. For grains, wait until moisture levels are around 15-20% and the color is golden yellow.";
+      }
+      
+      return NextResponse.json({ response });
     }
 
     const detections = detection_history ? detection_history.join(", ") : "None recently";
