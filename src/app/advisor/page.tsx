@@ -234,9 +234,9 @@ export default function AdvisorPage() {
   }, [handleSend]);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] md:h-[calc(100vh-4rem)] max-w-2xl mx-auto bg-[#efeae2] relative shadow-lg overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-8rem)] md:h-[calc(100vh-4rem)] max-w-2xl mx-auto glass-panel relative shadow-2xl overflow-hidden border-x border-white/5">
       {/* Header */}
-      <div className="bg-[#0f4c3a] text-white flex items-center p-3 shadow-md z-10 shrink-0">
+      <div className="glass-navbar text-white flex items-center p-4 z-10 shrink-0">
         <Link href="/dashboard" className="mr-2 md:hidden">
           <ArrowLeft className="h-6 w-6" />
         </Link>
@@ -255,16 +255,16 @@ export default function AdvisorPage() {
       {/* Chat Messages */}
       <div 
         ref={scrollRef}
-        className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#e5ddd5]"
+        className="flex-1 overflow-y-auto p-4 space-y-3 bg-black/20"
       >
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
             <div 
-              className={`max-w-[85%] rounded-lg p-2.5 shadow-sm relative ${
-                msg.sender === "user" ? "bg-[#dcf8c6] rounded-tr-none" : "bg-white rounded-tl-none"
+              className={`max-w-[85%] rounded-2xl p-3.5 shadow-xl relative backdrop-blur-md ${
+                msg.sender === "user" ? "bg-[#00E599]/20 border border-[#00E599]/30 rounded-tr-none text-white" : "bg-white/10 border border-white/10 rounded-tl-none text-white"
               }`}
             >
-              <p className="text-sm text-gray-800 break-words whitespace-pre-wrap">{msg.text}</p>
+              <p className="text-sm break-words whitespace-pre-wrap">{msg.text}</p>
               {msg.translatedText && (
                 <p className="mt-2 pt-2 border-t border-gray-100 italic text-gray-500 text-xs">
                   {msg.translatedText}
@@ -288,7 +288,7 @@ export default function AdvisorPage() {
                   </div>
                 )}
                 <div className="flex items-center gap-1 ml-auto">
-                  <span className="text-[10px] text-gray-500">{msg.timestamp}</span>
+                  <span className="text-[10px] text-white/40">{msg.timestamp}</span>
                   {msg.sender === "user" && <CheckCheck className="h-3 w-3 text-blue-500" />}
                 </div>
               </div>
@@ -297,25 +297,25 @@ export default function AdvisorPage() {
         ))}
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-white rounded-lg rounded-tl-none p-4 shadow-sm flex gap-1.5 items-center h-[40px]">
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl rounded-tl-none p-4 shadow-xl flex gap-1.5 items-center h-[40px] border border-white/10">
+              <div className="w-2 h-2 bg-[#00E599] rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-[#00E599] rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+              <div className="w-2 h-2 bg-[#00E599] rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
             </div>
           </div>
         )}
       </div>
 
       {/* Input Area Wrapper */}
-      <div className="bg-[#f0f0f0] flex flex-col shrink-0">
+      <div className="bg-black/40 backdrop-blur-xl flex flex-col shrink-0 border-t border-white/5">
         
         {/* Suggestion Chips */}
-        <div className="flex overflow-x-auto gap-2 p-2 whitespace-nowrap bg-[#f0f0f0] border-b border-gray-200 [&::-webkit-scrollbar]:hidden">
+        <div className="flex overflow-x-auto gap-2 p-3 whitespace-nowrap bg-transparent [&::-webkit-scrollbar]:hidden">
           {SUGGESTION_CHIPS.map((chip, idx) => (
             <button 
               key={idx}
               onClick={() => handleSend(chip)}
-              className="bg-white border border-gray-300 text-gray-700 text-xs px-3 py-1.5 rounded-full hover:bg-green-50 hover:border-green-300 hover:text-green-800 transition-colors shadow-sm shrink-0"
+              className="bg-white/5 border border-white/10 text-white/80 text-xs px-4 py-2 rounded-full hover:bg-[#00E599]/20 hover:border-[#00E599]/30 hover:text-white transition-all shadow-lg shrink-0 backdrop-blur-md"
             >
               {chip}
             </button>
@@ -325,7 +325,7 @@ export default function AdvisorPage() {
         {/* Input Field */}
         <div className="p-2 flex items-end gap-2">
           <div className="flex-1 flex flex-col">
-            <div className="flex-1 bg-white rounded-full flex items-center px-4 py-2 shadow-sm min-h-[44px]">
+            <div className="flex-1 glass-input rounded-full flex items-center px-5 py-2.5 shadow-inner min-h-[48px]">
               <input
                 type="text"
                 className="flex-1 bg-transparent outline-none text-sm"
@@ -337,7 +337,7 @@ export default function AdvisorPage() {
               <button 
                 title={t.mic_label || "Voice Input"}
                 onClick={toggleListening} 
-                className={`ml-2 p-1.5 rounded-full transition-colors ${isListening ? 'bg-red-100 text-red-500 animate-pulse' : 'text-gray-500 hover:text-[#0f4c3a]'}`}
+                className={`ml-2 p-2 rounded-full transition-all ${isListening ? 'bg-red-500/20 text-red-500 animate-pulse' : 'text-white/40 hover:text-[#00E599] hover:bg-white/5'}`}
               >
                 {isListening ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
               </button>
@@ -351,9 +351,9 @@ export default function AdvisorPage() {
           <button 
             onClick={() => handleSend()}
             disabled={!input.trim()}
-            className="h-11 w-11 bg-[#0f4c3a] rounded-full flex items-center justify-center text-white shadow-sm shrink-0 hover:bg-[#0a3629] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="h-12 w-12 bg-[#00E599] rounded-full flex items-center justify-center text-black shadow-[0_0_20px_rgba(0,229,153,0.3)] shrink-0 hover:scale-105 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed group"
           >
-            <Send className="h-5 w-5 ml-1" />
+            <Send className="h-5 w-5 ml-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </button>
         </div>
       </div>
