@@ -56,9 +56,9 @@ export default function LandingPage() {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-[120px] -z-10" />
 
         {/* Top Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel mb-8 border-white/10 shimmer">
-          <Sprout className="h-4 w-4 text-[#00E599] neon-glow" />
-          <span className="text-sm font-medium text-white/80">{t.hero_sub}</span>
+        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full glass-panel mb-8 border-white/10 shimmer">
+          <img src="/logo.png" alt="Logo" className="h-5 w-5 object-contain neon-glow" />
+          <span className="text-sm font-bold uppercase tracking-widest text-white/80">{t.hero_sub}</span>
         </div>
 
         {/* Main Headline */}
@@ -170,8 +170,8 @@ export default function LandingPage() {
             {/* Column 1 */}
             <div className="flex flex-col items-start">
               <Link href="/" className="flex items-center gap-3 mb-6">
-                <Leaf className="h-8 w-8 text-[#00E599] neon-glow" />
-                <span className="text-3xl font-black tracking-tight text-white">
+                <img src="/logo.png" alt="AgriAI Logo" className="h-10 w-10 object-contain neon-glow rounded-lg" />
+                <span className="text-3xl font-black tracking-tighter text-white">
                   Agri<span className="text-[#00E599]">AI</span>
                 </span>
               </Link>

@@ -240,8 +240,8 @@ export default function AdvisorPage() {
         <Link href="/dashboard" className="mr-2 md:hidden">
           <ArrowLeft className="h-6 w-6" />
         </Link>
-        <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center overflow-hidden shrink-0">
-          <Bot className="h-6 w-6 text-[#0f4c3a]" />
+        <div className="h-10 w-10 bg-black/20 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center overflow-hidden shrink-0">
+          <img src="/logo.png" alt="Bot Logo" className="h-7 w-7 object-contain neon-glow" />
         </div>
         <div className="ml-3 flex-1 flex flex-col justify-center">
           <h1 className="font-semibold text-lg leading-none">{t.appName}</h1>
