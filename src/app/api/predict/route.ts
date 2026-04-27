@@ -71,7 +71,7 @@ export async function POST(req: Request) {
     return NextResponse.json(parsedData);
   } catch (error: any) {
     console.error("Prediction API Error (falling back to mock data):", error);
-    return NextResponse.json(getMockData(inputs?.langCode || "en"));
+    return NextResponse.json(getMockData("en"));
   }
 }
 
