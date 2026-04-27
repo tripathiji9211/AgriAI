@@ -46,3 +46,5 @@ scratch/
 fix_*.js
 swap_ml.js
 src/proxy.ts
+
+.vercel

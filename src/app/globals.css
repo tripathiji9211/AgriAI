@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&family=Noto+Sans+Tamil&family=Noto+Sans+Telugu&family=Noto+Sans+Kannada&family=Noto+Sans+Bengali&family=Noto+Nastaliq+Urdu&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Sans+Tamil:wght@400;700&family=Noto+Sans+Telugu:wght@400;700&family=Noto+Sans+Kannada:wght@400;700&family=Noto+Sans+Gurmukhi:wght@400;700&family=Noto+Sans+Gujarati:wght@400;700&family=Noto+Sans+Bengali:wght@400;700&family=Noto+Sans+Malayalam:wght@400;700&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -16,8 +16,8 @@
 }
 
 body {
-  background: radial-gradient(circle at 15% 50%, rgba(0, 229, 153, 0.08), transparent 50%),
-              radial-gradient(circle at 85% 30%, rgba(0, 184, 255, 0.08), transparent 50%),
+  background: radial-gradient(circle at 15% 50%, rgba(0, 229, 153, 0.15), transparent 50%),
+              radial-gradient(circle at 85% 30%, rgba(0, 184, 255, 0.15), transparent 50%),
               #050505;
   background-attachment: fixed;
   color: var(--foreground);

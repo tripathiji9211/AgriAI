@@ -7,6 +7,9 @@ import { Camera, Image as ImageIcon, Upload, CheckCircle2, AlertTriangle, Leaf, 
 import Link from "next/link";
 import { useGlobalLanguage } from "@/lib/LanguageContext";
 import { savePendingScan } from "@/lib/idb";
+import { uploadScanImage } from "@/lib/supabase/storage";
+import { saveScanResult } from "@/lib/supabase/database";
+import { createClient } from "@/lib/supabase/client";
 
 export default function ScannerPage() {
   const { t, lang } = useGlobalLanguage();
@@ -18,6 +21,8 @@ export default function ScannerPage() {
   const [isLoadingTreatment, setIsLoadingTreatment] = useState(false);
   const [activeTab, setActiveTab] = useState<"organic" | "chemical" | "preventive">("organic");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const supabase = createClient();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -50,15 +55,35 @@ export default function ScannerPage() {
       return;
     }
 
+    // --- CLOUD STORAGE INTEGRATION ---
+    // Upload image to Supabase Storage
+    let cloudImageUrl = null;
+    const { publicUrl, error: uploadError } = await uploadScanImage(file);
+    if (!uploadError && publicUrl) {
+      cloudImageUrl = publicUrl;
+      setPreview(publicUrl);
+    }
+
     // Mock API call for disease detection (Online)
     setTimeout(async () => {
       setIsScanning(false);
       const detectionResult = {
         disease: "Early Blight",
         confidence: 94.2,
-        severity: "Moderate"
+        severity: "Moderate",
+        imageUrl: cloudImageUrl
       };
       setResult(detectionResult);
+      
+      // --- CLOUD DATABASE INTEGRATION ---
+      // Save result to DB if logged in
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await saveScanResult({
+          ...detectionResult,
+          userId: user.id
+        });
+      }
       
       // Call Claude API for treatment
       setIsLoadingTreatment(true);

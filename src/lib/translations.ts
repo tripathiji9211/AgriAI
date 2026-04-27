@@ -182,6 +182,11 @@ export const translations = {
     label_income_boost: "Est. Income Boost",
     report_title: "Full AgriAI Farm Diagnostic Report",
     report_generated: "Report generated in",
+    chatbot_welcome: "Hello! I am your Farming Advisor. How can I help you grow today?",
+    qa_disease: "Identify a disease",
+    qa_weather: "Check local weather",
+    qa_fertilizer: "Fertilizer advice",
+    chat_placeholder: "Type your question here...",
     bot_welcome_msg: "Hello! I'm AgriAI. How can I help you with your crops today?",
     bot_online_status: "Online • AI Advisor",
     suggestion_diseases: "What diseases affect my crop?",
@@ -392,6 +397,11 @@ export const translations = {
     label_income_boost: "अनुमानित आय में वृद्धि",
     report_title: "पूर्ण एग्री एआई फार्म नैदानिक रिपोर्ट",
     report_generated: "रिपोर्ट तैयार की गई:",
+    chatbot_welcome: "नमस्ते! मैं आपका कृषि सलाहकार हूँ। आज मैं आपकी कैसे मदद कर सकता हूँ?",
+    qa_disease: "बीमारी की पहचान करें",
+    qa_weather: "स्थानीय मौसम जांचें",
+    qa_fertilizer: "उर्वरक सलाह",
+    chat_placeholder: "अपना प्रश्न यहाँ टाइप करें...",
     bot_welcome_msg: "नमस्ते! मैं एग्री एआई हूँ। आज मैं आपकी फसलों के बारे में आपकी कैसे मदद कर सकता हूँ?",
     bot_online_status: "ऑनलाइन • एआई सलाहकार",
     suggestion_diseases: "मेरी फसल को कौन सी बीमारियां प्रभावित करती हैं?",
@@ -647,7 +657,7 @@ export const translations = {
     qa_weather: "స్థానిక వాతావరణాన్ని తనిఖీ చేయండి",
     qa_fertilizer: "ఎరువుల సలహా",
     chat_placeholder: "మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి...",
-    listening: "వింటున్నాను..."
+    listening: "వింటున్నాను...",
   },
   kn: {
     appName: "AgriAI",
@@ -675,7 +685,7 @@ export const translations = {
     qa_weather: "ಸ್ಥಳೀಯ ಹವಾಮಾನ ಪರಿಶೀಲಿಸಿ",
     qa_fertilizer: "ರಸಗೊಬ್ಬರ ಸಲಹೆ",
     chat_placeholder: "ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಇಲ್ಲಿ ಟೈಪ್ ಮಾಡಿ...",
-    listening: "ಆಲಿಸಲಾಗುತ್ತಿದೆ..."
+    listening: "ಆಲಿಸಲಾಗುತ್ತಿದೆ...",
   },
   mr: {
     appName: "AgriAI",
@@ -703,7 +713,7 @@ export const translations = {
     qa_weather: "स्थानिक हवामान तपासा",
     qa_fertilizer: "खताचा सल्ला",
     chat_placeholder: "तुमचा प्रश्न येथे टाइप करा...",
-    listening: "ऐकत आहे..."
+    listening: "ऐकत आहे...",
   },
   pa: {
     appName: "AgriAI",
@@ -731,7 +741,7 @@ export const translations = {
     qa_weather: "ਸਥਾਨਕ ਮੌਸਮ ਦੀ ਜਾਂਚ ਕਰੋ",
     qa_fertilizer: "ਖਾਦ ਦੀ ਸਲਾਹ",
     chat_placeholder: "ਆਪਣਾ ਸਵਾਲ ਇੱਥੇ ਟਾਈਪ ਕਰੋ...",
-    listening: "ਸੁਣ ਰਿਹਾ ਹੈ..."
+    listening: "ਸੁਣ ਰਿਹਾ ਹੈ...",
   },
   gu: {
     appName: "AgriAI",
@@ -759,7 +769,7 @@ export const translations = {
     qa_weather: "સ્થાનિક હવામાન તપાસો",
     qa_fertilizer: "ખાતરની સલાહ",
     chat_placeholder: "તમારો પ્રશ્ન અહીં ટાઇપ કરો...",
-    listening: "સાંભળી રહ્યું છે..."
+    listening: "સાંભળી રહ્યું છે...",
   },
   bn: {
     appName: "AgriAI",
@@ -786,8 +796,8 @@ export const translations = {
     qa_disease: "একটি রোগ চিহ্নিত করুন",
     qa_weather: "স্থানীয় আবহাওয়া পরীক্ষা করুন",
     qa_fertilizer: "সার পরামর্শ",
-    chat_placeholder: "আপনার প্রশ্ন এখানে টাইপ করুন...",
-    listening: "শুনছি..."
+    chat_placeholder: "আপনার প্রশ্ন এখানে টাইપ করুন...",
+    listening: "শুনছি...",
   },
   ml: {
     appName: "AgriAI",

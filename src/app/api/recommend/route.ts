@@ -8,24 +8,32 @@ export async function POST(req: Request) {
     await new Promise(resolve => setTimeout(resolve, 1500));
 
     // Call the Python ML Backend
-    const backendUrl = process.env.ML_BACKEND_URL || "http://localhost:8000";
-    const mlResponse = await fetch(`${backendUrl}/api/recommend`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        N: n, P: p, K: k,
-        temperature: 25.0, // Defaults or from weather API
-        humidity: 80.0,
-        ph: ph,
-        rainfall: 200.0
-      })
-    });
+    const backendUrl = process.env.ML_BACKEND_URL || "http://127.0.0.1:8000";
+    
+    let recommended_crop = "wheat"; // Fallback default
+    
+    try {
+      const mlResponse = await fetch(`${backendUrl}/api/recommend`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          N: n, P: p, K: k,
+          temperature: 25.0, // Defaults or from weather API
+          humidity: 80.0,
+          ph: ph,
+          rainfall: 200.0
+        })
+      });
 
-    if (!mlResponse.ok) {
-       throw new Error("ML Backend unreachable. Ensure FastAPI is running on port 8000.");
+      if (!mlResponse.ok) {
+         console.warn("ML Backend returned error. Ensure FastAPI is running on port 8000.");
+      } else {
+         const data = await mlResponse.json();
+         recommended_crop = data.recommended_crop;
+      }
+    } catch (fetchError) {
+      console.warn("ML Backend unreachable. Ensure FastAPI is running on port 8000. Using fallback.");
     }
-
-    const { recommended_crop } = await mlResponse.json();
 
     // Map predicted crop to rich UI metadata
     const cropMetadata: Record<string, any> = {

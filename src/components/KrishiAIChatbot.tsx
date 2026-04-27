@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { X, Send, Sprout, Mic, Volume2, Loader2, Languages } from "lucide-react";
 import { useGlobalLanguage } from "@/lib/LanguageContext";
+import Image from "next/image";
 
 interface Message {
   id: string;
@@ -152,7 +153,7 @@ export default function KrishiAIChatbot() {
 
     setInputValue("");
     const userMsg: Message = {
-      id: Date.now().toString(),
+      id: `user-${Date.now()}`,
       text,
       sender: 'user',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -169,7 +170,7 @@ export default function KrishiAIChatbot() {
       const data = await res.json();
       
       const botMsg: Message = {
-        id: (Date.now() + 1).toString(),
+        id: `bot-${Date.now()}`,
         text: data.response,
         sender: 'bot',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -288,9 +289,13 @@ export default function KrishiAIChatbot() {
         onClick={() => setIsOpen(!isOpen)}
         className={`w-16 h-16 bg-white border-[3px] border-[#0f4c3a] rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(15,76,58,0.4)] transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden ${isOpen ? 'scale-0 opacity-0 pointer-events-none absolute' : 'scale-100 opacity-100'}`}
       >
-        <div className="w-full h-full">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/3d-farmer.png" alt="Farming Advisor Avatar" className="object-cover w-full h-full scale-110 mt-1" />
+        <div className="w-full h-full relative">
+          <Image 
+            src="/3d-farmer.png" 
+            alt="Farming Advisor Avatar" 
+            fill
+            className="object-cover scale-110 mt-1" 
+          />
         </div>
       </button>
     </div>

@@ -3,15 +3,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Camera, MessageSquare, LineChart } from "lucide-react";
+import { useGlobalLanguage } from "@/lib/LanguageContext";
 import { cn } from "@/lib/utils";
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const { t } = useGlobalLanguage();
 
   const links = [
-    { href: "/dashboard", label: "Home", icon: Home },
-    { href: "/scanner", label: "Scan", icon: Camera },
-    { href: "/advisor", label: "Advisor", icon: MessageSquare },
+    { href: "/dashboard", label: t.nav_dashboard, icon: Home },
+    { href: "/scanner", label: t.nav_detection, icon: Camera },
+    { href: "/advisor", label: t.nav_advisor, icon: MessageSquare },
   ];
 
   return (

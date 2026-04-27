@@ -4,11 +4,13 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Upload, Sprout, Shield, BarChart, Cpu, FileText, Leaf, Camera, X, Check, PlayCircle, BrainCircuit, Droplets, Loader2, UploadCloud } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useGlobalLanguage } from "@/lib/LanguageContext";
 
 export default function LandingPage() {
   const { t } = useGlobalLanguage();
   const [isLearnMoreOpen, setIsLearnMoreOpen] = useState(false);
+  const [showCrops, setShowCrops] = useState(false);
   const [videoUrl, setVideoUrl] = useState<string | null>("/3d-animation.mp4");
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -57,7 +59,7 @@ export default function LandingPage() {
 
         {/* Top Badge */}
         <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full glass-panel mb-8 border-white/10 shimmer">
-          <img src="/logo.png" alt="Logo" className="h-5 w-5 object-contain neon-glow" />
+          <Image src="/logo.png" alt="Logo" width={20} height={20} className="h-5 w-5 object-contain neon-glow" />
           <span className="text-sm font-bold uppercase tracking-widest text-white/80">{t.hero_sub}</span>
         </div>
 
@@ -170,7 +172,7 @@ export default function LandingPage() {
             {/* Column 1 */}
             <div className="flex flex-col items-start">
               <Link href="/" className="flex items-center gap-3 mb-6">
-                <img src="/logo.png" alt="AgriAI Logo" className="h-10 w-10 object-contain neon-glow rounded-lg" />
+                <Image src="/logo.png" alt="AgriAI Logo" width={40} height={40} className="h-10 w-10 object-contain neon-glow rounded-lg" />
                 <span className="text-3xl font-black tracking-tighter text-white">
                   Agri<span className="text-[#00E599]">AI</span>
                 </span>
@@ -322,12 +324,39 @@ export default function LandingPage() {
                     {t.btn_try_now}
                   </Button>
                 </Link>
-                <Link href="/scanner" onClick={() => setIsLearnMoreOpen(false)}>
-                  <Button variant="ghost" className="w-full sm:w-auto glass-panel text-white border border-white/10 px-10 py-7 h-auto text-xl font-bold rounded-2xl transition-all hover:bg-white/5">
-                    {t.supported_crops}
-                  </Button>
-                </Link>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => setShowCrops(!showCrops)}
+                  className={`w-full sm:w-auto glass-panel text-white border border-white/10 px-10 py-7 h-auto text-xl font-bold rounded-2xl transition-all hover:bg-white/5 ${showCrops ? 'bg-white/10 border-[#00E599]/50' : ''}`}
+                >
+                  {t.supported_crops}
+                </Button>
               </div>
+
+              {/* Supported Crops Grid */}
+              {showCrops && (
+                <div className="pt-10 animate-in fade-in slide-in-from-top-4 duration-500">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                    {[
+                      { name: "Tomato", icon: "🍅" },
+                      { name: "Potato", icon: "🥔" },
+                      { name: "Rice", icon: "🌾" },
+                      { name: "Wheat", icon: "🌾" },
+                      { name: "Corn", icon: "🌽" },
+                      { name: "Cotton", icon: "☁️" },
+                      { name: "Grapes", icon: "🍇" },
+                      { name: "Apple", icon: "🍎" },
+                      { name: "Sugarcane", icon: "🎋" },
+                      { name: "Coffee", icon: "☕" }
+                    ].map((crop) => (
+                      <div key={crop.name} className="glass-card p-6 flex flex-col items-center gap-3 group hover:border-[#00E599]/50 transition-all">
+                        <span className="text-4xl group-hover:scale-125 transition-transform">{crop.icon}</span>
+                        <span className="text-white font-bold text-sm tracking-wide">{crop.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Trust Bar */}
               <div className="border-t border-white/5 pt-10 text-center">

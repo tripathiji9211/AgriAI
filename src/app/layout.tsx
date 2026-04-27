@@ -29,7 +29,7 @@ export default function RootLayout({
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet" />
       </head>
-      <body className={`${inter.className} min-h-screen bg-white text-gray-900 flex flex-col`}>
+      <body className={`${inter.className} min-h-screen flex flex-col`}>
         <LanguageProvider>
           <OfflineIndicator />
           <Navbar />
