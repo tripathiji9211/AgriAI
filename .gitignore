@@ -40,6 +40,20 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# AgriAI specific ignores
+*.joblib
+fix_dash.js
+fix_lang.js
+swap_ml.js
+src/proxy.ts
+.next/
+
 # AgriAI custom ignores
 scratch/
 *.joblib
