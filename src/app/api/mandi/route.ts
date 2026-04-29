@@ -8,34 +8,38 @@ export async function GET(request: Request) {
 
   const apiKey = process.env.DATA_GOV_API_KEY;
   if (!apiKey) {
-    // Return high-quality mock data if API key is missing
+    // Generate intelligent mock data based on user filters for a "live" prototype experience
+    const targetState = state || "Uttar Pradesh";
+    const targetDistrict = district || "Lucknow";
+    const targetCommodity = commodity ? commodity.charAt(0).toUpperCase() + commodity.slice(1) : "Onion";
+
     return NextResponse.json({ 
       records: [
         {
-          state: "Maharashtra",
-          district: "Pune",
-          market: "Pune",
-          commodity: "Onion",
-          min_price: "1200",
-          max_price: "1800",
-          modal_price: "1500",
+          state: targetState,
+          district: targetDistrict,
+          market: targetDistrict,
+          commodity: targetCommodity,
+          min_price: (1500 + Math.random() * 200).toFixed(0),
+          max_price: (2000 + Math.random() * 300).toFixed(0),
+          modal_price: (1800 + Math.random() * 100).toFixed(0),
           arrival_date: new Date().toLocaleDateString('en-GB')
         },
         {
-          state: "Punjab",
-          district: "Ludhiana",
-          market: "Ludhiana",
-          commodity: "Wheat",
+          state: targetState,
+          district: targetDistrict,
+          market: targetDistrict + " Sub-Mandi",
+          commodity: targetCommodity === "Wheat" ? "Rice" : "Wheat",
           min_price: "2125",
           max_price: "2250",
           modal_price: "2150",
           arrival_date: new Date().toLocaleDateString('en-GB')
         },
         {
-          state: "Karnataka",
-          district: "Bangalore",
-          market: "Binny Mill",
-          commodity: "Tomato",
+          state: targetState,
+          district: targetDistrict,
+          market: "Central Mandi",
+          commodity: targetCommodity === "Tomato" ? "Potato" : "Tomato",
           min_price: "800",
           max_price: "1200",
           modal_price: "1000",

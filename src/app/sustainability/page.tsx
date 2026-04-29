@@ -70,81 +70,81 @@ export default function SustainabilityDashboard() {
   };
 
   return (
-    <div className="container mx-auto p-4 md:p-8 max-w-7xl space-y-8 animate-in fade-in duration-500">
+    <div className="container mx-auto p-4 md:p-8 max-w-7xl space-y-12 animate-in fade-in duration-700">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-gray-900">{t.sustain_title}</h1>
-          <p className="text-gray-500">{t.sustain_desc}</p>
+          <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">{t.sustain_title}</h1>
+          <p className="text-white/40 text-lg">{t.sustain_desc}</p>
         </div>
-        <Button onClick={generateReport} disabled={isLoadingReport} className="bg-[#0f4c3a] hover:bg-[#0a3629]">
+        <Button onClick={generateReport} disabled={isLoadingReport} className="bg-[#00E599] hover:bg-[#00c986] text-black h-12 px-8 font-bold shadow-[0_0_20px_rgba(0,229,153,0.3)]">
           {isLoadingReport ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t.btn_analyzing}</> : <><FileText className="mr-2 h-4 w-4" /> {t.btn_gen_report}</>}
         </Button>
       </div>
 
       {report && (
-        <Card className="border-green-200 bg-green-50 shadow-sm animate-in slide-in-from-top-4">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg text-green-900 flex items-center gap-2">
-              <Leaf className="h-5 w-5" />
+        <Card className="border-white/10 bg-white/5 backdrop-blur-md shadow-2xl animate-in slide-in-from-top-4">
+          <CardHeader className="pb-2 border-b border-white/5">
+            <CardTitle className="text-xl text-[#00E599] flex items-center gap-3">
+              <Leaf className="h-6 w-6 neon-glow" />
               {t.report_ai_title}
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-green-800 leading-relaxed whitespace-pre-wrap">{report}</p>
+          <CardContent className="pt-6">
+            <p className="text-white/80 leading-relaxed whitespace-pre-wrap text-lg">{report}</p>
           </CardContent>
         </Card>
       )}
 
       {/* Metrics Row */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-6">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="bg-white/5 border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors">
+          <CardContent className="p-8">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-gray-500">{t.label_pesticide_reduced}</p>
-                <h3 className="text-3xl font-bold text-gray-900 mt-1">{MOCK_METRICS.pesticideReduction}%</h3>
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-white/40">{t.label_pesticide_reduced}</p>
+                <h3 className="text-4xl font-black text-white mt-2 tracking-tighter">{MOCK_METRICS.pesticideReduction}%</h3>
               </div>
-              <div className="p-3 bg-red-50 rounded-lg">
-                <Bug className="h-5 w-5 text-red-600" />
+              <div className="p-4 bg-red-500/20 rounded-2xl border border-red-500/30">
+                <Bug className="h-6 w-6 text-red-500" />
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-6">
+        <Card className="bg-white/5 border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors">
+          <CardContent className="p-8">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-gray-500">{t.label_eco_treatments_count}</p>
-                <h3 className="text-3xl font-bold text-gray-900 mt-1">{MOCK_METRICS.ecoTreatments}</h3>
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-white/40">{t.label_eco_treatments_count}</p>
+                <h3 className="text-4xl font-black text-white mt-2 tracking-tighter">{MOCK_METRICS.ecoTreatments}</h3>
               </div>
-              <div className="p-3 bg-green-50 rounded-lg">
-                <Sprout className="h-5 w-5 text-green-600" />
+              <div className="p-4 bg-green-500/20 rounded-2xl border border-green-500/30">
+                <Sprout className="h-6 w-6 text-[#00E599]" />
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-6">
+        <Card className="bg-white/5 border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors">
+          <CardContent className="p-8">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-gray-500">{t.label_co2_saved}</p>
-                <h3 className="text-3xl font-bold text-gray-900 mt-1">{MOCK_METRICS.co2Saved} <span className="text-sm font-normal text-gray-500">kg</span></h3>
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-white/40">{t.label_co2_saved}</p>
+                <h3 className="text-4xl font-black text-white mt-2 tracking-tighter">{MOCK_METRICS.co2Saved} <span className="text-sm font-bold text-white/40">kg</span></h3>
               </div>
-              <div className="p-3 bg-blue-50 rounded-lg">
-                <Wind className="h-5 w-5 text-blue-600" />
+              <div className="p-4 bg-blue-500/20 rounded-2xl border border-blue-500/30">
+                <Wind className="h-6 w-6 text-blue-400" />
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-[#0f4c3a] bg-[#0f4c3a] text-white">
-          <CardContent className="p-6">
+        <Card className="bg-[#00E599] border-none shadow-[0_0_30px_rgba(0,229,153,0.3)]">
+          <CardContent className="p-8 text-black">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-green-100">{t.label_health_score}</p>
-                <h3 className="text-3xl font-bold mt-1">{MOCK_METRICS.healthScore}<span className="text-sm font-normal text-green-200">/100</span></h3>
+                <p className="text-xs font-black uppercase tracking-[0.2em] opacity-60">{t.label_health_score}</p>
+                <h3 className="text-4xl font-black mt-2 tracking-tighter">{MOCK_METRICS.healthScore}<span className="text-sm font-bold opacity-60">/100</span></h3>
               </div>
-              <div className="p-3 bg-white/20 rounded-lg">
-                <Target className="h-5 w-5 text-white" />
+              <div className="p-4 bg-black/10 rounded-2xl border border-black/10">
+                <Target className="h-6 w-6 text-black" />
               </div>
             </div>
           </CardContent>
@@ -153,20 +153,20 @@ export default function SustainabilityDashboard() {
 
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Chart */}
-        <Card className="lg:col-span-2 border-gray-200">
+        <Card className="lg:col-span-2 border-white/10 bg-white/5 backdrop-blur-md">
           <CardHeader>
-            <CardTitle>{t.chart_usage_title}</CardTitle>
-            <CardDescription>{t.chart_usage_desc}</CardDescription>
+            <CardTitle className="text-xl text-white">{t.chart_usage_title}</CardTitle>
+            <CardDescription className="text-white/40">{t.chart_usage_desc}</CardDescription>
           </CardHeader>
-          <CardContent className="h-[300px] min-h-[300px]">
+          <CardContent className="h-[350px] min-h-[300px]">
             <div dir="ltr" className="h-full w-full min-w-[200px]">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={CHART_DATA} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                  <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fontSize: 12}} />
-                  <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12}} />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="usage" stroke="#16a34a" strokeWidth={3} dot={{r: 4, strokeWidth: 2}} activeDot={{r: 6}} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                  <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fontSize: 12, fill: 'rgba(255,255,255,0.4)'}} />
+                  <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12, fill: 'rgba(255,255,255,0.4)'}} />
+                  <Tooltip contentStyle={{ background: '#111', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }} />
+                  <Line type="monotone" dataKey="usage" stroke="#00E599" strokeWidth={4} dot={{r: 4, fill: '#00E599', strokeWidth: 0}} activeDot={{r: 6, stroke: '#fff', strokeWidth: 2}} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -174,39 +174,39 @@ export default function SustainabilityDashboard() {
         </Card>
 
         {/* Progress Bars */}
-        <Card className="border-gray-200">
+        <Card className="border-white/10 bg-white/5 backdrop-blur-md">
           <CardHeader>
-            <CardTitle>{t.impact_title}</CardTitle>
-            <CardDescription>{t.impact_desc}</CardDescription>
+            <CardTitle className="text-xl text-white">{t.impact_title}</CardTitle>
+            <CardDescription className="text-white/40">{t.impact_desc}</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-8">
-            <div className="space-y-2">
+          <CardContent className="space-y-10">
+            <div className="space-y-3">
               <div className="flex justify-between items-center text-sm">
-                <span className="font-medium text-gray-700 flex items-center gap-2"><Sprout className="h-4 w-4 text-[#8b5a2b]" /> {t.label_soil_health}</span>
-                <span className="font-bold text-gray-900">85%</span>
+                <span className="font-black text-white/60 flex items-center gap-3 uppercase tracking-widest text-[10px]"><Sprout className="h-5 w-5 text-[#8b5a2b]" /> {t.label_soil_health}</span>
+                <span className="font-black text-white text-base">85%</span>
               </div>
-              <div className="w-full bg-gray-100 rounded-full h-2.5">
-                <div className="bg-[#8b5a2b] h-2.5 rounded-full" style={{ width: '85%' }}></div>
+              <div className="w-full bg-white/5 rounded-full h-3 border border-white/5 overflow-hidden">
+                <div className="bg-[#8b5a2b] h-full rounded-full shadow-[0_0_10px_rgba(139,90,43,0.3)]" style={{ width: '85%' }}></div>
               </div>
             </div>
             
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex justify-between items-center text-sm">
-                <span className="font-medium text-gray-700 flex items-center gap-2"><Droplets className="h-4 w-4 text-blue-500" /> {t.label_water_quality}</span>
-                <span className="font-bold text-gray-900">92%</span>
+                <span className="font-black text-white/60 flex items-center gap-3 uppercase tracking-widest text-[10px]"><Droplets className="h-5 w-5 text-blue-500" /> {t.label_water_quality}</span>
+                <span className="font-black text-white text-base">92%</span>
               </div>
-              <div className="w-full bg-gray-100 rounded-full h-2.5">
-                <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: '92%' }}></div>
+              <div className="w-full bg-white/5 rounded-full h-3 border border-white/5 overflow-hidden">
+                <div className="bg-blue-500 h-full rounded-full shadow-[0_0_10px_rgba(59,130,246,0.3)]" style={{ width: '92%' }}></div>
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex justify-between items-center text-sm">
-                <span className="font-medium text-gray-700 flex items-center gap-2"><Leaf className="h-4 w-4 text-green-500" /> {t.label_biodiversity}</span>
-                <span className="font-bold text-gray-900">78%</span>
+                <span className="font-black text-white/60 flex items-center gap-3 uppercase tracking-widest text-[10px]"><Leaf className="h-5 w-5 text-[#00E599]" /> {t.label_biodiversity}</span>
+                <span className="font-black text-white text-base">78%</span>
               </div>
-              <div className="w-full bg-gray-100 rounded-full h-2.5">
-                <div className="bg-green-500 h-2.5 rounded-full" style={{ width: '78%' }}></div>
+              <div className="w-full bg-white/5 rounded-full h-3 border border-white/5 overflow-hidden">
+                <div className="bg-[#00E599] h-full rounded-full shadow-[0_0_10px_rgba(0,229,153,0.3)]" style={{ width: '78%' }}></div>
               </div>
             </div>
           </CardContent>
@@ -214,21 +214,21 @@ export default function SustainabilityDashboard() {
       </div>
 
       {/* AI Tips */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold text-gray-900">{t.ai_tips_title}</h2>
+      <div className="space-y-6">
+        <h2 className="text-2xl font-black text-white uppercase tracking-widest">{t.ai_tips_title}</h2>
         {isLoadingTips ? (
-          <div className="flex items-center justify-center p-12 text-gray-400 border-2 border-dashed rounded-xl bg-gray-50">
-            <Loader2 className="h-8 w-8 animate-spin text-[#0f4c3a]" />
+          <div className="flex items-center justify-center p-12 text-white/10 border-2 border-dashed border-white/5 rounded-3xl bg-white/5 backdrop-blur-md">
+            <Loader2 className="h-12 w-12 animate-spin text-[#00E599]" />
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tips.map((t_tip, i) => (
-              <Card key={i} className="border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                <CardContent className="p-5 flex flex-col h-full justify-between gap-4">
-                  <p className="text-sm text-gray-700 leading-relaxed">{t_tip.tip}</p>
-                  <div className="flex items-center gap-1.5 self-start bg-green-50 text-green-700 px-2.5 py-1 rounded-md text-xs font-bold border border-green-100 mt-2">
-                    <Leaf className="h-3 w-3" />
-                    Eco Score: {t_tip.score}/10
+              <Card key={i} className="border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all group rounded-3xl">
+                <CardContent className="p-8 flex flex-col h-full justify-between gap-6">
+                  <p className="text-white/80 leading-relaxed font-medium">{t_tip.tip}</p>
+                  <div className="flex items-center gap-2 self-start bg-[#00E599]/10 text-[#00E599] px-4 py-1.5 rounded-xl text-xs font-black border border-[#00E599]/20 group-hover:bg-[#00E599]/20 transition-all">
+                    <Leaf className="h-4 w-4" />
+                    ECO SCORE: {t_tip.score}/10
                   </div>
                 </CardContent>
               </Card>

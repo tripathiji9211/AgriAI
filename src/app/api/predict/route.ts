@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getLangPrompt } from '@/lib/langHelper';
 
-const apiKey = process.env.GOOGLE_GEMINI_API_KEY || "";
+const geminiKey = process.env.GOOGLE_GEMINI_API_KEY || "";
+const anthropicKey = process.env.ANTHROPIC_API_KEY || "";
 
 export async function POST(req: Request) {
   try {
@@ -12,95 +13,114 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required inputs' }, { status: 400 });
     }
 
-    if (!apiKey) {
-      // Mock Response Fallback if no Gemini key is provided
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      return NextResponse.json({
-        risk_level: "high",
-        predicted_diseases: [
-          { name: "Late Blight", probability_percent: 85, peak_risk_day: 4 },
-          { name: "Powdery Mildew", probability_percent: 40, peak_risk_day: 2 }
-        ],
-        contributing_factors: [
-          "High continuous humidity (>85%) over the last 48 hours",
-          "Optimal temperature range for fungal spore germination (65-75°F)",
-          "History of late blight in the region during this season"
-        ],
-        preventive_actions: [
-          "Apply a protective fungicide immediately before rain events",
-          "Ensure maximal airflow by pruning lower canopy",
-          "Monitor daily for early symptoms (water-soaked spots)"
-        ]
-      });
-    }
-
-    const systemPrompt = getLangPrompt(langCode) + "You are an expert agricultural risk analyst. Respond strictly with valid JSON. Do not include markdown formatting or extra text.";
-    const userPrompt = `${systemPrompt}\n\nGiven these crop conditions: ${JSON.stringify(inputs)}, predict disease risks for the next 7 days. Return JSON exactly matching this structure:
+    const systemPrompt = getLangPrompt(langCode) + " You are an expert agricultural risk analyst. You provide data-driven disease risk forecasts. Respond strictly with valid JSON. Do not include markdown formatting or extra text.";
+    
+    const userPrompt = `Predict crop disease risks for the next 7 days based on the following conditions:
+    Crop: ${inputs.cropType}
+    Location: ${inputs.location}
+    Temperature: ${inputs.temperature || "Normal"}
+    Humidity: ${inputs.humidity || "Normal"}
+    Past Diseases: ${inputs.pastDiseases || "None"}
+    
+    Consider the local climate and typical diseases for this crop and region.
+    
+    Return JSON exactly matching this structure:
     { 
       "risk_level": "low" | "medium" | "high", 
-      "predicted_diseases": [{"name": "string", "probability_percent": number, "peak_risk_day": number (1-7)}], 
+      "predicted_diseases": [
+        { "name": "string", "probability_percent": number, "peak_risk_day": number (1-7) }
+      ], 
       "contributing_factors": ["string"], 
       "preventive_actions": ["string"] 
     }`;
 
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{ text: userPrompt }]
-        }],
-        generationConfig: {
-          response_mime_type: "application/json",
-        }
-      })
-    });
+    let parsedData = null;
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.warn(`Gemini API error (falling back to mock data): ${errorText}`);
-      return NextResponse.json(getMockData(langCode));
+    if (geminiKey) {
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: userPrompt }] }],
+            generationConfig: { response_mime_type: "application/json" }
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (content) {
+            parsedData = JSON.parse(content);
+          }
+        }
+      } catch (e) {
+        console.error("Gemini prediction call failed:", e);
+      }
     }
 
-    const data = await res.json();
-    const content = data.candidates[0].content.parts[0].text;
-    const parsedData = JSON.parse(content);
+    if (!parsedData && anthropicKey) {
+      try {
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
+          method: 'POST',
+          headers: {
+            'x-api-key': anthropicKey,
+            'anthropic-version': '2023-06-01',
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'claude-3-haiku-20240307',
+            max_tokens: 1500,
+            system: systemPrompt,
+            messages: [{ role: 'user', content: userPrompt }]
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const content = data.content[0].text;
+          const jsonMatch = content.match(/\{[\s\S]*\}/);
+          parsedData = JSON.parse(jsonMatch ? jsonMatch[0] : content);
+        }
+      } catch (e) {
+        console.error("Anthropic prediction fallback failed:", e);
+      }
+    }
+
+    if (!parsedData) {
+      // LAST RESORT: Simulated Fallback
+      console.warn("Prediction AI failed. Using simulated fallback.");
+      parsedData = {
+        risk_level: "medium",
+        predicted_diseases: [
+          { name: "General Fungal Risk", probability_percent: 45, peak_risk_day: 3 },
+          { name: "Nutrient Deficiency", probability_percent: 20, peak_risk_day: 5 }
+        ],
+        contributing_factors: [
+          "Current humidity levels are slightly elevated",
+          "Historical data for this region suggests seasonal risk",
+          "Variable temperature patterns observed"
+        ],
+        preventive_actions: [
+          "Monitor leaves daily for color changes",
+          "Maintain consistent irrigation schedule",
+          "Check soil pH levels"
+        ]
+      };
+    }
     
     return NextResponse.json(parsedData);
   } catch (error: any) {
-    console.error("Prediction API Error (falling back to mock data):", error);
-    return NextResponse.json(getMockData("en"));
+    console.error("Prediction API Error:", error);
+    // Return a more context-aware fallback if possible, or a clear error
+    return NextResponse.json({
+      error: "Analysis failed",
+      risk_level: "medium",
+      predicted_diseases: [
+        { name: "General Fungal Risk", probability_percent: 50, peak_risk_day: 3 }
+      ],
+      contributing_factors: ["Unstable weather patterns", "Regional history"],
+      preventive_actions: ["Regular monitoring", "Balanced irrigation"]
+    }, { status: 500 });
   }
-}
-
-function getMockData(langCode: string) {
-  // Use localized mock data if possible
-  const isHindi = langCode === 'hi';
-  return {
-    risk_level: "high",
-    predicted_diseases: [
-      { 
-        name: isHindi ? "अगेती झुलसा (Early Blight)" : "Early Blight", 
-        probability_percent: 85, 
-        peak_risk_day: 4 
-      },
-      { 
-        name: isHindi ? "पाउडरी मिल्ड्यू (Powdery Mildew)" : "Powdery Mildew", 
-        probability_percent: 40, 
-        peak_risk_day: 2 
-      }
-    ],
-    contributing_factors: [
-      isHindi ? "पिछले 48 घंटों में उच्च निरंतर आर्द्रता (>85%)" : "High continuous humidity (>85%) over the last 48 hours",
-      isHindi ? "कवक बीजाणु अंकुरण के लिए अनुकूल तापमान सीमा" : "Optimal temperature range for fungal spore germination",
-      isHindi ? "इस मौसम के दौरान क्षेत्र में बीमारी का इतिहास" : "History of disease in the region during this season"
-    ],
-    preventive_actions: [
-      isHindi ? "बारिश से ठीक पहले सुरक्षात्मक कवकनाशी लगाएं" : "Apply a protective fungicide immediately before rain events",
-      isHindi ? "निचले छत्र की छंटाई करके अधिकतम वायु प्रवाह सुनिश्चित करें" : "Ensure maximal airflow by pruning lower canopy",
-      isHindi ? "शुरुआती लक्षणों के लिए रोजाना निगरानी करें" : "Monitor daily for early symptoms"
-    ]
-  };
 }

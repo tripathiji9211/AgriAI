@@ -3,13 +3,14 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Camera, Image as ImageIcon, Upload, CheckCircle2, AlertTriangle, Leaf, Loader2, WifiOff } from "lucide-react";
+import { Camera, Image as ImageIcon, Upload, CheckCircle2, AlertTriangle, Leaf, Loader2, WifiOff, Database } from "lucide-react";
 import Link from "next/link";
 import { useGlobalLanguage } from "@/lib/LanguageContext";
 import { savePendingScan } from "@/lib/idb";
 import { uploadScanImage } from "@/lib/supabase/storage";
 import { saveScanResult } from "@/lib/supabase/database";
 import { createClient } from "@/lib/supabase/client";
+import { motion } from "framer-motion";
 
 export default function ScannerPage() {
   const { t, lang } = useGlobalLanguage();
@@ -27,6 +28,13 @@ export default function ScannerPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
+      
+      // Check file size (limit to 4MB for Gemini API safety)
+      if (selectedFile.size > 4 * 1024 * 1024) {
+        alert("File is too large. Please select an image smaller than 4MB.");
+        return;
+      }
+
       setFile(selectedFile);
       setPreview(URL.createObjectURL(selectedFile));
       setResult(null);
@@ -55,43 +63,76 @@ export default function ScannerPage() {
       return;
     }
 
-    // --- CLOUD STORAGE INTEGRATION ---
-    // Upload image to Supabase Storage
-    let cloudImageUrl = null;
-    const { publicUrl, error: uploadError } = await uploadScanImage(file);
-    if (!uploadError && publicUrl) {
-      cloudImageUrl = publicUrl;
-      setPreview(publicUrl);
-    }
+    try {
+      // Convert file to base64 for API
+      const reader = new FileReader();
+      const base64Promise = new Promise<string>((resolve) => {
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      });
+      const base64Image = await base64Promise;
 
-    // Mock API call for disease detection (Online)
-    setTimeout(async () => {
-      setIsScanning(false);
-      const detectionResult = {
-        disease: "Early Blight",
-        confidence: 94.2,
-        severity: "Moderate",
-        imageUrl: cloudImageUrl
-      };
-      setResult(detectionResult);
+      // --- REAL API CALL FOR DETECTION ---
+      const detectRes = await fetch("/api/detect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: base64Image, langCode: lang })
+      });
+
+      const detectionResult = await detectRes.json();
+
+      if (!detectRes.ok) {
+        throw new Error(detectionResult.error || "Detection failed");
+      }
+
+      if (detectionResult.isPlant === false) {
+        setResult({
+          ...detectionResult,
+          imageUrl: preview,
+          invalid: true
+        });
+        setIsScanning(false);
+        return;
+      }
+
+      // --- CLOUD STORAGE INTEGRATION ---
+      // Upload image to Supabase Storage (optional, we already have base64 for display)
+      let cloudImageUrl = null;
+      const { publicUrl, error: uploadError } = await uploadScanImage(file);
+      if (!uploadError && publicUrl) {
+        cloudImageUrl = publicUrl;
+        setPreview(publicUrl);
+      }
+      
+      setResult({
+        ...detectionResult,
+        imageUrl: cloudImageUrl || preview
+      });
       
       // --- CLOUD DATABASE INTEGRATION ---
-      // Save result to DB if logged in
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         await saveScanResult({
-          ...detectionResult,
+          disease: detectionResult.disease,
+          confidence: detectionResult.confidence,
+          severity: detectionResult.severity,
+          imageUrl: cloudImageUrl || preview,
           userId: user.id
         });
       }
       
-      // Call Claude API for treatment
+      // Call AI API for treatment
       setIsLoadingTreatment(true);
       try {
         const res = await fetch("/api/treatment", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ disease_name: detectionResult.disease, severity: detectionResult.severity, langCode: lang })
+          body: JSON.stringify({ 
+            disease_name: detectionResult.disease, 
+            severity: detectionResult.severity, 
+            plant: detectionResult.plant,
+            langCode: lang 
+          })
         });
         const data = await res.json();
         if (res.ok) {
@@ -102,18 +143,43 @@ export default function ScannerPage() {
       } finally {
         setIsLoadingTreatment(false);
       }
-    }, 2500);
+    } catch (error: any) {
+      console.error("Scan error:", error);
+      alert(`Scan Error: ${error.message || "An unexpected error occurred"}`);
+    } finally {
+      setIsScanning(false);
+    }
   };
 
   return (
-    <div className="container mx-auto p-4 md:p-8 max-w-3xl space-y-6">
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-gray-900">{t.scan_title}</h1>
-        <p className="text-gray-500">{t.scan_desc}</p>
+    <div className="container mx-auto p-4 md:p-8 max-w-3xl space-y-8 animate-in fade-in duration-700 pb-24">
+      <div className="text-center space-y-3">
+        <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">{t.scan_title}</h1>
+        <p className="text-white/40 text-lg font-medium">{t.scan_desc}</p>
       </div>
 
       {!result ? (
-        <Card className="border-2 border-dashed border-green-200 bg-green-50/50">
+        <div className="space-y-6">
+          <div className="flex items-center justify-between bg-white/5 backdrop-blur-md p-4 rounded-3xl border border-white/10">
+             <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#00E599]/20 rounded-2xl flex items-center justify-center border border-[#00E599]/30">
+                  <Database className="w-5 h-5 text-[#00E599]" />
+                </div>
+                <div>
+                   <p className="text-[10px] font-black text-white/40 uppercase tracking-widest leading-none mb-1">Global Intelligence</p>
+                   <p className="text-sm font-bold text-white">54,231+ Records Online</p>
+                </div>
+             </div>
+             <div className="text-right">
+                <p className="text-[10px] font-black text-[#00E599] uppercase tracking-widest leading-none mb-1">Live Feed</p>
+                <div className="flex items-center gap-1.5 justify-end">
+                   <div className="w-1.5 h-1.5 bg-[#00E599] rounded-full animate-pulse"></div>
+                   <p className="text-[10px] font-bold text-white/60">Active Sync</p>
+                </div>
+             </div>
+          </div>
+
+          <Card className="border-2 border-dashed border-[#00E599]/20 bg-[#00E599]/5 backdrop-blur-sm rounded-[2.5rem]">
           <CardContent className="flex flex-col items-center justify-center p-10 min-h-[400px]">
             {preview ? (
               <div className="space-y-6 w-full flex flex-col items-center">
@@ -163,12 +229,15 @@ export default function ScannerPage() {
             )}
           </CardContent>
         </Card>
+      </div>
       ) : (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <Card className="border-amber-200 bg-amber-50 overflow-hidden">
-            <div className="bg-amber-500 text-white p-4 flex items-center gap-3">
-              <AlertTriangle className="h-6 w-6" />
-              <h2 className="text-xl font-bold">{t.results_title}</h2>
+          <Card className={`${result.invalid ? "border-red-200 bg-red-50" : result.disease === "Healthy" ? "border-green-200 bg-green-50" : "border-amber-200 bg-amber-50"} overflow-hidden`}>
+            <div className={`${result.invalid ? "bg-red-600" : result.disease === "Healthy" ? "bg-green-600" : "bg-amber-500"} text-white p-4 flex items-center gap-3`}>
+              {result.invalid ? <AlertTriangle className="h-6 w-6" /> : result.disease === "Healthy" ? <CheckCircle2 className="h-6 w-6" /> : <AlertTriangle className="h-6 w-6" />}
+              <h2 className="text-xl font-bold">
+                {result.invalid ? "Invalid Image" : result.disease === "Healthy" ? t.status_healthy || "Healthy Plant" : t.results_title}
+              </h2>
             </div>
             <CardContent className="p-6 space-y-6">
               <div className="grid sm:grid-cols-2 gap-6">
@@ -176,7 +245,7 @@ export default function ScannerPage() {
                   <div className="relative rounded-lg overflow-hidden shadow-sm aspect-square max-w-[200px] mx-auto sm:mx-0">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={preview} alt="Scanned Leaf" className="object-cover w-full h-full" />
-                    <div className="absolute inset-0 border-4 border-amber-500/50 rounded-lg"></div>
+                    <div className={`absolute inset-0 border-4 ${result.invalid ? "border-red-500/50" : result.disease === "Healthy" ? "border-green-500/50" : "border-amber-500/50"} rounded-lg`}></div>
                   </div>
                 )}
                 {result.offline ? (
@@ -188,32 +257,78 @@ export default function ScannerPage() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <div>
-                      <p className="text-sm text-gray-500 font-medium">{t.label_disease}</p>
-                      <h3 className="text-2xl font-bold text-gray-900">{result.disease}</h3>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500 font-medium">{t.label_confidence}</p>
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 bg-gray-200 rounded-full h-2.5">
-                          <div className="bg-green-600 h-2.5 rounded-full" style={{ width: `${result.confidence}%` }}></div>
+                    {result.invalid ? (
+                      <div className="space-y-4 py-4">
+                        <div className="flex items-center gap-3 text-red-600 bg-red-500/10 p-4 rounded-2xl border border-red-500/20">
+                           <AlertTriangle className="w-6 h-6 shrink-0" />
+                           <p className="font-black uppercase tracking-tight text-sm">Plant Verification Failed</p>
                         </div>
-                        <span className="text-sm font-bold text-green-700">{result.confidence}%</span>
+                        <p className="text-red-700/80 font-medium leading-relaxed">
+                          {result.message || "Our AI could not identify a valid plant, crop, or leaf in this image."}
+                        </p>
+                        <div className="p-4 bg-white/50 rounded-2xl border border-gray-100 space-y-2">
+                           <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">How to fix this:</p>
+                           <ul className="text-xs text-gray-600 space-y-1.5 list-disc list-inside font-medium">
+                              <li>Ensure the leaf is the main subject</li>
+                              <li>Avoid including faces or hands</li>
+                              <li>Check for proper lighting and focus</li>
+                              <li>Remove non-agricultural backgrounds</li>
+                           </ul>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500 font-medium">{t.label_severity}</p>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200 mt-1">
-                        {result.severity}
-                      </span>
-                    </div>
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-2 mb-2">
+                           <span className="px-2 py-0.5 bg-green-500/10 text-green-600 text-[10px] font-black uppercase tracking-widest rounded-md border border-green-500/20 flex items-center gap-1.5">
+                              <CheckCircle2 className="w-3 h-3" /> Agricultural Verified
+                           </span>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500 font-medium">{t.label_disease}</p>
+                          <h3 className={`text-2xl font-black tracking-tight ${result.disease === "Healthy" ? "text-green-700" : "text-gray-900"}`}>{result.disease}</h3>
+                        </div>
+                        {result.plant && (
+                          <div>
+                            <p className="text-sm text-gray-500 font-medium">{t.label_plant || "Plant"}</p>
+                            <h4 className="text-lg font-black text-gray-700 tracking-tight">{result.plant}</h4>
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm text-gray-500 font-medium">{t.label_confidence}</p>
+                          <div className="flex items-center gap-3">
+                            <div className="flex-1 bg-gray-200 rounded-full h-3 overflow-hidden">
+                              <motion.div 
+                                initial={{ width: 0 }}
+                                animate={{ width: `${result.confidence}%` }}
+                                transition={{ duration: 1, ease: "easeOut" }}
+                                className={`${result.disease === "Healthy" ? "bg-green-500" : "bg-amber-500"} h-full rounded-full shadow-[0_0_10px_rgba(34,197,94,0.3)]`} 
+                              />
+                            </div>
+                            <span className={`text-sm font-black ${result.disease === "Healthy" ? "text-green-700" : "text-amber-700"}`}>{result.confidence}%</span>
+                          </div>
+                        </div>
+                        {result.disease !== "Healthy" && (
+                          <div>
+                            <p className="text-sm text-gray-500 font-medium">{t.label_severity}</p>
+                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest mt-2 border ${
+                              result.severity === "High" ? "bg-red-100 text-red-700 border-red-200" : 
+                              result.severity === "Moderate" ? "bg-amber-100 text-amber-700 border-amber-200" : 
+                              "bg-green-100 text-green-700 border-green-200"
+                            }`}>
+                              {result.severity}
+                            </span>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </div>
                 )}
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-green-200">
+          {result && !result.invalid && (
+            <Card className="border-green-200">
             <div className="bg-green-50 border-b border-green-100 p-4 flex items-center gap-3">
               <Leaf className="h-6 w-6 text-green-600" />
               <h2 className="text-xl font-bold text-green-900">{t.treatment_plan_title}</h2>
@@ -296,12 +411,13 @@ export default function ScannerPage() {
               ) : null}
             </CardContent>
           </Card>
+          )}
 
           <div className="flex gap-4 justify-center pt-4">
             <Button variant="outline" onClick={() => { setFile(null); setPreview(null); setResult(null); }}>
               {t.btn_scan_another}
             </Button>
-            <Link href="/advisor">
+            <Link href={`/advisor?plant=${encodeURIComponent(result.plant)}&disease=${encodeURIComponent(result.disease)}`}>
               <Button className="bg-green-600 hover:bg-green-700">
                 {t.btn_ask_advisor}
               </Button>

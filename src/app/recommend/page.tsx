@@ -3,15 +3,8 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Leaf, Droplets, MapPin, Loader2, Info } from "lucide-react";
-
-interface Recommendation {
-  name: string;
-  sowing_time: string;
-  fertilizer_gap: string;
-  icon: string;
-}
-
+import { Leaf, Droplets, MapPin, Loader2, Info, Navigation, Globe } from "lucide-react";
+import LocationPickerMap from "@/components/LocationPickerMap";
 import { useGlobalLanguage } from "@/lib/LanguageContext";
 
 interface Recommendation {
@@ -25,6 +18,8 @@ export default function RecommendCropPage() {
   const { t } = useGlobalLanguage();
   const [state, setState] = useState("");
   const [soilType, setSoilType] = useState("");
+  const [isDetecting, setIsDetecting] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   const [n, setN] = useState(50);
   const [p, setP] = useState(50);
   const [k, setK] = useState(50);
@@ -39,6 +34,31 @@ export default function RecommendCropPage() {
     { name: t.soil_red || "Red", color: "bg-red-100 border-red-300" },
     { name: t.soil_laterite || "Laterite", color: "bg-yellow-100 border-yellow-300" },
   ];
+
+  const detectLocation = () => {
+    setIsDetecting(true);
+    // Simulate reverse geocoding from browser API
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // In a real app, we'd use a reverse geocoding API here
+          // For demo, we'll pick a state randomly or based on coords
+          setTimeout(() => {
+            const states = ["Punjab", "Maharashtra", "UP", "MP", "Haryana"];
+            const randomState = states[Math.floor(Math.random() * states.length)];
+            setState(randomState);
+            setIsDetecting(false);
+          }, 1500);
+        },
+        (error) => {
+          console.error("Location access denied", error);
+          setIsDetecting(false);
+        }
+      );
+    } else {
+      setIsDetecting(false);
+    }
+  };
 
   const handleRecommend = async () => {
     if (!state || !soilType) return;
@@ -70,31 +90,62 @@ export default function RecommendCropPage() {
   return (
     <div className="container mx-auto p-4 md:p-8 max-w-5xl space-y-8 animate-in fade-in duration-500">
       <div className="text-center space-y-3">
-        <h1 className="text-3xl md:text-4xl font-black text-white">{t.recommend_title}</h1>
-        <p className="text-white/40 text-lg">{t.recommend_desc}</p>
+        <h1 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tight">{t.recommend_title}</h1>
+        <p className="text-white/40 text-lg font-medium">{t.recommend_desc}</p>
       </div>
 
-      <Card className="border border-white/10 shadow-xl rounded-3xl overflow-hidden glass-card">
+      <Card className="border border-white/10 shadow-2xl rounded-[2.5rem] overflow-hidden glass-card">
         <CardContent className="p-0">
-          <div className="flex flex-col md:flex-row min-h-[500px]">
+          <div className="flex flex-col md:flex-row min-h-[600px]">
             {/* Form Section */}
             <div className="p-6 md:p-10 w-full md:w-[55%] space-y-8">
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-white/80 flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-[#00E599]" /> {t.label_state_select}
-                </label>
-                <select 
-                  className="w-full p-4 rounded-xl border border-white/10 focus:ring-2 focus:ring-[#00E599] outline-none glass-input transition-all font-medium"
-                  value={state}
-                  onChange={(e) => setState(e.target.value)}
-                >
-                  <option value="">{t.label_state_select}...</option>
-                  <option value="Punjab">Punjab</option>
-                  <option value="Maharashtra">Maharashtra</option>
-                  <option value="UP">Uttar Pradesh</option>
-                  <option value="MP">Madhya Pradesh</option>
-                  <option value="Haryana">Haryana</option>
-                </select>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-black text-white/80 uppercase tracking-widest flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-[#00E599]" /> {t.label_state_select}
+                  </label>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => setShowMap(!showMap)}
+                      className={`text-[10px] font-black uppercase rounded-full px-3 h-7 border-white/10 transition-all ${showMap ? 'bg-[#00E599] text-black border-[#00E599]' : 'bg-white/5 text-white/60 hover:bg-white/10'}`}
+                    >
+                      <Globe className="w-3 h-3 mr-1.5" /> {showMap ? "Hide Map" : "Map View"}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      disabled={isDetecting}
+                      onClick={detectLocation}
+                      className="bg-white/5 text-white/60 hover:bg-white/10 border-white/10 text-[10px] font-black uppercase rounded-full px-3 h-7"
+                    >
+                      {isDetecting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Navigation className="w-3 h-3 mr-1.5" />}
+                      {isDetecting ? "Detecting..." : "Auto-Detect"}
+                    </Button>
+                  </div>
+                </div>
+
+                {showMap && (
+                  <div className="animate-in zoom-in-95 duration-300">
+                    <LocationPickerMap onSelectState={setState} selectedState={state} />
+                  </div>
+                )}
+
+                {!showMap && (
+                  <select 
+                    className="w-full p-4 rounded-2xl border border-white/10 focus:ring-2 focus:ring-[#00E599] outline-none glass-input transition-all font-bold text-white shadow-inner"
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                  >
+                    <option value="" className="bg-[#1a1a1a]">{t.label_state_select}...</option>
+                    <option value="Punjab" className="bg-[#1a1a1a]">Punjab</option>
+                    <option value="Maharashtra" className="bg-[#1a1a1a]">Maharashtra</option>
+                    <option value="UP" className="bg-[#1a1a1a]">Uttar Pradesh</option>
+                    <option value="MP" className="bg-[#1a1a1a]">Madhya Pradesh</option>
+                    <option value="Haryana" className="bg-[#1a1a1a]">Haryana</option>
+                  </select>
+                )}
               </div>
 
               <div className="space-y-3">

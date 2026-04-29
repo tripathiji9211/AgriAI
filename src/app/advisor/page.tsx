@@ -22,8 +22,12 @@ const SUGGESTION_CHIPS = [
   "When to harvest?"
 ];
 
-export default function AdvisorPage() {
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+
+function AdvisorContent() {
   const { lang, t } = useGlobalLanguage();
+  const searchParams = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [interimTranscript, setInterimTranscript] = useState("");
@@ -33,13 +37,7 @@ export default function AdvisorPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
-  
-  const SUGGESTION_CHIPS = [
-    t.suggestion_diseases || "What diseases affect my crop?",
-    t.suggestion_soil || "How to improve soil health?",
-    t.suggestion_organic || "Organic pesticide recipe",
-    t.suggestion_harvest || "When to harvest?"
-  ];
+  const hasAutoFired = useRef(false);
 
   // Speech Recognition
   const SpeechRecognition = typeof window !== 'undefined' ? (window as any).SpeechRecognition || (window as any).webkitRecognition : null;
@@ -50,14 +48,35 @@ export default function AdvisorPage() {
 
   const handleSendRef = useRef<any>(null);
 
+  const SUGGESTION_CHIPS = [
+    t.suggestion_diseases || "What diseases affect my crop?",
+    t.suggestion_soil || "How to improve soil health?",
+    t.suggestion_organic || "Organic pesticide recipe",
+    t.suggestion_harvest || "When to harvest?"
+  ];
+
   useEffect(() => {
-    setMessages([{
+    const welcomeMsg: Message = {
       id: "welcome",
       text: t.bot_welcome_msg || "Hello! I'm AgriAI. How can I help you with your crops today?",
       sender: "bot",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    }]);
-  }, [t.bot_welcome_msg]);
+    };
+    
+    setMessages([welcomeMsg]);
+
+    // Handle incoming diagnostic context from scanner
+    const plant = searchParams.get("plant");
+    const disease = searchParams.get("disease");
+
+    if (plant && disease && !hasAutoFired.current) {
+      hasAutoFired.current = true;
+      const autoQuery = `I just scanned my ${plant} and found ${disease}. What should I do for immediate recovery?`;
+      setTimeout(() => {
+        handleSend(autoQuery);
+      }, 500);
+    }
+  }, [t.bot_welcome_msg, searchParams]);
 
   const toggleListening = async () => {
     if (isListening) {
@@ -358,5 +377,13 @@ export default function AdvisorPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdvisorPage() {
+  return (
+    <Suspense fallback={<div className="h-screen flex items-center justify-center bg-[#0f4c3a]"><Loader2 className="h-10 w-10 text-[#00E599] animate-spin" /></div>}>
+      <AdvisorContent />
+    </Suspense>
   );
 }

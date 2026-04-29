@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, TrendingUp, CloudRain, Thermometer, Info, BellRing, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, TrendingUp, CloudRain, Thermometer, Info, BellRing, CheckCircle2, RefreshCcw, Loader2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { useGlobalLanguage } from "@/lib/LanguageContext";
 
@@ -18,8 +18,43 @@ export default function PredictionPage() {
     pastDiseases: ""
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isWeatherLoading, setIsWeatherLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [alertSet, setAlertSet] = useState(false);
+
+  const fetchWeatherData = async () => {
+    if (!formData.location) {
+      alert("Please enter a location first (e.g., Pune)");
+      return;
+    }
+
+    setIsWeatherLoading(true);
+    try {
+      // 1. Get Lat/Lon from location string using OSM Nominatim
+      const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(formData.location)}&limit=1`);
+      const geoData = await geoRes.json();
+      
+      if (geoData && geoData[0]) {
+        const { lat, lon } = geoData[0];
+        
+        // 2. Get Weather from Open-Meteo
+        const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m`);
+        const weatherData = await weatherRes.json();
+        
+        if (weatherData && weatherData.current) {
+          setFormData({
+            ...formData,
+            temperature: `${Math.round(weatherData.current.temperature_2m)}°C`,
+            humidity: `${Math.round(weatherData.current.relative_humidity_2m)}%`
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Weather fetch failed:", error);
+    } finally {
+      setIsWeatherLoading(false);
+    }
+  };
 
   const handlePredict = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,18 +152,29 @@ export default function PredictionPage() {
                   <label className="text-xs font-bold uppercase tracking-widest text-white/40">{t.label_crop_type}</label>
                   <input required placeholder="e.g. Tomato, Potato, Wheat" value={formData.cropType} onChange={e => setFormData({...formData, cropType: e.target.value})} className="w-full glass-input p-3 rounded-xl outline-none text-sm" />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-white/40">{t.label_location}</label>
+                <div className="space-y-2 relative">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/40">{t.label_location}</label>
+                    <button 
+                      type="button"
+                      onClick={fetchWeatherData}
+                      disabled={isWeatherLoading}
+                      className="text-[10px] font-black text-[#00E599] hover:text-[#00c986] uppercase tracking-tighter flex items-center gap-1 transition-all active:scale-95 disabled:opacity-50"
+                    >
+                      {isWeatherLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCcw className="h-3 w-3" />}
+                      {isWeatherLoading ? "Fetching..." : "Fetch Live Weather"}
+                    </button>
+                  </div>
                   <input required placeholder="e.g. Pune, Maharashtra" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} className="w-full glass-input p-3 rounded-xl outline-none text-sm" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-white/40">{t.label_temp}</label>
-                    <input required placeholder="e.g. 25-30°C" value={formData.temperature} onChange={e => setFormData({...formData, temperature: e.target.value})} className="w-full glass-input p-3 rounded-xl outline-none text-sm" />
+                    <input required placeholder="e.g. 25°C" value={formData.temperature} onChange={e => setFormData({...formData, temperature: e.target.value})} className="w-full glass-input p-3 rounded-xl outline-none text-sm" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-white/40">{t.label_humidity_percent}</label>
-                    <input required placeholder="e.g. 85%" value={formData.humidity} onChange={e => setFormData({...formData, humidity: e.target.value})} className="w-full glass-input p-3 rounded-xl outline-none text-sm" />
+                    <input required placeholder="e.g. 70%" value={formData.humidity} onChange={e => setFormData({...formData, humidity: e.target.value})} className="w-full glass-input p-3 rounded-xl outline-none text-sm" />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -136,7 +182,7 @@ export default function PredictionPage() {
                   <input placeholder="e.g. Blight last year" value={formData.pastDiseases} onChange={e => setFormData({...formData, pastDiseases: e.target.value})} className="w-full glass-input p-3 rounded-xl outline-none text-sm" />
                 </div>
                 
-                <Button type="submit" disabled={isLoading} className="w-full h-14 text-lg font-bold mt-6 shadow-[0_0_25px_rgba(0,229,153,0.2)]">
+                <Button type="submit" disabled={isLoading} className="w-full h-14 text-lg font-bold mt-6 shadow-[0_0_25px_rgba(0,229,153,0.2)] bg-[#00E599] hover:bg-[#00c986] text-black">
                   {isLoading ? t.btn_analyzing_risks : t.btn_gen_predict}
                 </Button>
               </form>
