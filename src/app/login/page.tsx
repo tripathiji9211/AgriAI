@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Leaf, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useGlobalLanguage } from "@/lib/LanguageContext";
 
@@ -17,6 +17,17 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const [supabase] = useState(() => createClient());
+
+  useEffect(() => {
+    // Check for errors redirected from the auth callback
+    const searchParams = new URLSearchParams(window.location.search);
+    const errorMsg = searchParams.get('error');
+    if (errorMsg) {
+      alert(`Authentication Error: ${errorMsg}`);
+      // Clean up the URL
+      window.history.replaceState({}, '', '/login');
+    }
+  }, []);
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
@@ -33,6 +44,7 @@ export default function LoginPage() {
 
     if (error) {
       console.error("Auth Error:", error.message);
+      alert(`Google Login Error: ${error.message}\n(Make sure Google provider is enabled in your Supabase dashboard)`);
       setIsLoading(false);
     }
   };

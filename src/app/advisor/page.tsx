@@ -285,7 +285,7 @@ function AdvisorContent() {
             >
               <p className="text-sm break-words whitespace-pre-wrap">{msg.text}</p>
               {msg.translatedText && (
-                <p className="mt-2 pt-2 border-t border-gray-100 italic text-gray-500 text-xs">
+                <p className="mt-2 pt-2 border-t border-white/10 italic text-white/40 text-xs">
                   {msg.translatedText}
                 </p>
               )}
@@ -294,13 +294,13 @@ function AdvisorContent() {
                   <div className="flex gap-2">
                     <button 
                       onClick={() => handleSpeak(msg.text, msg.id)}
-                      className="p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-[#0f4c3a] transition-colors"
+                      className="p-1 rounded-full hover:bg-white/10 text-white/40 hover:text-[#00E599] transition-colors"
                     >
                       {isPlaying === msg.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Volume2 className="w-3.5 h-3.5" />}
                     </button>
                     <button 
                       onClick={() => handleTranslate(msg.id)}
-                      className="p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-[#0f4c3a] transition-colors"
+                      className="p-1 rounded-full hover:bg-white/10 text-white/40 hover:text-[#00E599] transition-colors"
                     >
                       {isTranslating === msg.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Languages className="w-3.5 h-3.5" />}
                     </button>
@@ -382,7 +382,7 @@ function AdvisorContent() {
 
 export default function AdvisorPage() {
   return (
-    <Suspense fallback={<div className="h-screen flex items-center justify-center bg-[#0f4c3a]"><Loader2 className="h-10 w-10 text-[#00E599] animate-spin" /></div>}>
+    <Suspense fallback={<div className="h-screen flex items-center justify-center bg-[#050505]"><Loader2 className="h-10 w-10 text-[#00E599] animate-spin" /></div>}>
       <AdvisorContent />
     </Suspense>
   );

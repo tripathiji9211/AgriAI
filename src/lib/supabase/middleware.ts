@@ -35,12 +35,15 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Optional: Add logic here to protect routes if !user
-  // e.g. if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
-  //   const url = request.nextUrl.clone()
-  //   url.pathname = '/login'
-  //   return NextResponse.redirect(url)
-  // }
+  // Protect private routes if !user
+  const protectedRoutes = ['/dashboard', '/profile', '/prediction', '/reports', '/scanner', '/iot', '/sustainability', '/advisor', '/mandi'];
+  const isProtected = protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route));
 
-  return supabaseResponse
+  if (!user && isProtected) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/login';
+    return NextResponse.redirect(url);
+  }
+
+  return supabaseResponse;
 }

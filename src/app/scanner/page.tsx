@@ -202,18 +202,18 @@ export default function ScannerPage() {
               </div>
             ) : (
               <div className="text-center space-y-6">
-                <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
-                  <Upload className="h-10 w-10 text-green-600" />
+                <div className="mx-auto w-20 h-20 bg-white/5 rounded-full flex items-center justify-center border border-white/10">
+                  <Upload className="h-10 w-10 text-[#00E599]" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="font-semibold text-lg">{t.upload_heading}</h3>
-                  <p className="text-sm text-gray-500">{t.upload_subheading}</p>
+                  <h3 className="font-semibold text-lg text-white">{t.upload_heading}</h3>
+                  <p className="text-sm text-white/40">{t.upload_subheading}</p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button onClick={() => fileInputRef.current?.click()} className="bg-green-600 hover:bg-green-700">
+                  <Button onClick={() => fileInputRef.current?.click()} className="bg-[#00E599] hover:bg-[#00c986] text-black font-bold">
                     <ImageIcon className="mr-2 h-4 w-4" /> {t.btn_choose_file}
                   </Button>
-                  <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+                  <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="border-white/10 text-white hover:bg-white/5">
                     <Camera className="mr-2 h-4 w-4" /> {t.btn_open_camera}
                   </Button>
                 </div>
@@ -232,9 +232,9 @@ export default function ScannerPage() {
       </div>
       ) : (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <Card className={`${result.invalid ? "border-red-200 bg-red-50" : result.disease === "Healthy" ? "border-green-200 bg-green-50" : "border-amber-200 bg-amber-50"} overflow-hidden`}>
-            <div className={`${result.invalid ? "bg-red-600" : result.disease === "Healthy" ? "bg-green-600" : "bg-amber-500"} text-white p-4 flex items-center gap-3`}>
-              {result.invalid ? <AlertTriangle className="h-6 w-6" /> : result.disease === "Healthy" ? <CheckCircle2 className="h-6 w-6" /> : <AlertTriangle className="h-6 w-6" />}
+          <Card className={`${result.invalid ? "border-red-500/20 bg-red-500/5" : result.disease === "Healthy" ? "border-green-500/20 bg-green-500/5" : "border-amber-500/20 bg-amber-500/5"} overflow-hidden backdrop-blur-xl`}>
+            <div className={`${result.invalid ? "bg-red-500/20" : result.disease === "Healthy" ? "bg-green-500/20" : "bg-amber-500/20"} text-white p-4 flex items-center gap-3 border-b border-white/10`}>
+              {result.invalid ? <AlertTriangle className="h-6 w-6 text-red-500" /> : result.disease === "Healthy" ? <CheckCircle2 className="h-6 w-6 text-green-500" /> : <AlertTriangle className="h-6 w-6 text-amber-500" />}
               <h2 className="text-xl font-bold">
                 {result.invalid ? "Invalid Image" : result.disease === "Healthy" ? t.status_healthy || "Healthy Plant" : t.results_title}
               </h2>
@@ -263,12 +263,12 @@ export default function ScannerPage() {
                            <AlertTriangle className="w-6 h-6 shrink-0" />
                            <p className="font-black uppercase tracking-tight text-sm">Plant Verification Failed</p>
                         </div>
-                        <p className="text-red-700/80 font-medium leading-relaxed">
+                        <p className="text-red-400 font-medium leading-relaxed">
                           {result.message || "Our AI could not identify a valid plant, crop, or leaf in this image."}
                         </p>
-                        <div className="p-4 bg-white/50 rounded-2xl border border-gray-100 space-y-2">
-                           <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">How to fix this:</p>
-                           <ul className="text-xs text-gray-600 space-y-1.5 list-disc list-inside font-medium">
+                        <div className="p-4 bg-white/5 rounded-2xl border border-white/5 space-y-2">
+                           <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">How to fix this:</p>
+                           <ul className="text-xs text-white/60 space-y-1.5 list-disc list-inside font-medium">
                               <li>Ensure the leaf is the main subject</li>
                               <li>Avoid including faces or hands</li>
                               <li>Check for proper lighting and focus</li>
@@ -284,36 +284,36 @@ export default function ScannerPage() {
                            </span>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500 font-medium">{t.label_disease}</p>
-                          <h3 className={`text-2xl font-black tracking-tight ${result.disease === "Healthy" ? "text-green-700" : "text-gray-900"}`}>{result.disease}</h3>
+                          <p className="text-sm text-white/40 font-medium">{t.label_disease}</p>
+                          <h3 className={`text-2xl font-black tracking-tight ${result.disease === "Healthy" ? "text-green-400" : "text-white"}`}>{result.disease}</h3>
                         </div>
                         {result.plant && (
                           <div>
-                            <p className="text-sm text-gray-500 font-medium">{t.label_plant || "Plant"}</p>
-                            <h4 className="text-lg font-black text-gray-700 tracking-tight">{result.plant}</h4>
+                            <p className="text-sm text-white/40 font-medium">{t.label_plant || "Plant"}</p>
+                            <h4 className="text-lg font-black text-white/80 tracking-tight">{result.plant}</h4>
                           </div>
                         )}
                         <div>
-                          <p className="text-sm text-gray-500 font-medium">{t.label_confidence}</p>
+                          <p className="text-sm text-white/40 font-medium">{t.label_confidence}</p>
                           <div className="flex items-center gap-3">
-                            <div className="flex-1 bg-gray-200 rounded-full h-3 overflow-hidden">
+                            <div className="flex-1 bg-white/5 rounded-full h-3 overflow-hidden border border-white/5 shadow-inner">
                               <motion.div 
                                 initial={{ width: 0 }}
                                 animate={{ width: `${result.confidence}%` }}
                                 transition={{ duration: 1, ease: "easeOut" }}
-                                className={`${result.disease === "Healthy" ? "bg-green-500" : "bg-amber-500"} h-full rounded-full shadow-[0_0_10px_rgba(34,197,94,0.3)]`} 
+                                className={`${result.disease === "Healthy" ? "bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.3)]" : "bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.3)]"} h-full rounded-full`} 
                               />
                             </div>
-                            <span className={`text-sm font-black ${result.disease === "Healthy" ? "text-green-700" : "text-amber-700"}`}>{result.confidence}%</span>
+                            <span className={`text-sm font-black ${result.disease === "Healthy" ? "text-green-400" : "text-amber-400"}`}>{result.confidence}%</span>
                           </div>
                         </div>
                         {result.disease !== "Healthy" && (
                           <div>
-                            <p className="text-sm text-gray-500 font-medium">{t.label_severity}</p>
+                            <p className="text-sm text-white/40 font-medium">{t.label_severity}</p>
                             <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest mt-2 border ${
-                              result.severity === "High" ? "bg-red-100 text-red-700 border-red-200" : 
-                              result.severity === "Moderate" ? "bg-amber-100 text-amber-700 border-amber-200" : 
-                              "bg-green-100 text-green-700 border-green-200"
+                              result.severity === "High" ? "bg-red-500/10 text-red-400 border-red-500/20" : 
+                              result.severity === "Moderate" ? "bg-amber-500/10 text-amber-400 border-amber-500/20" : 
+                              "bg-green-500/10 text-green-400 border-green-500/20"
                             }`}>
                               {result.severity}
                             </span>
@@ -328,10 +328,10 @@ export default function ScannerPage() {
           </Card>
 
           {result && !result.invalid && (
-            <Card className="border-green-200">
-            <div className="bg-green-50 border-b border-green-100 p-4 flex items-center gap-3">
-              <Leaf className="h-6 w-6 text-green-600" />
-              <h2 className="text-xl font-bold text-green-900">{t.treatment_plan_title}</h2>
+            <Card className="border-white/10 bg-white/5 backdrop-blur-xl">
+            <div className="bg-white/5 border-b border-white/10 p-4 flex items-center gap-3">
+              <Leaf className="h-6 w-6 text-[#00E599]" />
+              <h2 className="text-xl font-bold text-white">{t.treatment_plan_title}</h2>
             </div>
             <CardContent className="p-0">
               {isLoadingTreatment ? (
@@ -341,10 +341,10 @@ export default function ScannerPage() {
                 </div>
               ) : treatmentPlan ? (
                 <div>
-                  <div className="flex border-b border-gray-200 bg-gray-50/50">
-                    <button onClick={() => setActiveTab("organic")} className={`flex-1 py-3 px-4 text-sm font-medium border-b-2 transition-colors ${activeTab === "organic" ? "border-green-600 text-green-700 bg-green-50/50" : "border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-100"}`}>{t.organic_tab}</button>
-                    <button onClick={() => setActiveTab("chemical")} className={`flex-1 py-3 px-4 text-sm font-medium border-b-2 transition-colors ${activeTab === "chemical" ? "border-amber-500 text-amber-700 bg-amber-50/50" : "border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-100"}`}>{t.chemical_tab}</button>
-                    <button onClick={() => setActiveTab("preventive")} className={`flex-1 py-3 px-4 text-sm font-medium border-b-2 transition-colors ${activeTab === "preventive" ? "border-blue-500 text-blue-700 bg-blue-50/50" : "border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-100"}`}>{t.preventive_tab}</button>
+                  <div className="flex border-b border-white/10 bg-white/5">
+                    <button onClick={() => setActiveTab("organic")} className={`flex-1 py-3 px-4 text-sm font-black uppercase tracking-widest border-b-2 transition-all ${activeTab === "organic" ? "border-[#00E599] text-[#00E599] bg-[#00E599]/5" : "border-transparent text-white/40 hover:text-white"}`}>{t.organic_tab}</button>
+                    <button onClick={() => setActiveTab("chemical")} className={`flex-1 py-3 px-4 text-sm font-black uppercase tracking-widest border-b-2 transition-all ${activeTab === "chemical" ? "border-amber-500 text-amber-500 bg-amber-500/5" : "border-transparent text-white/40 hover:text-white"}`}>{t.chemical_tab}</button>
+                    <button onClick={() => setActiveTab("preventive")} className={`flex-1 py-3 px-4 text-sm font-black uppercase tracking-widest border-b-2 transition-all ${activeTab === "preventive" ? "border-blue-500 text-blue-500 bg-blue-500/5" : "border-transparent text-white/40 hover:text-white"}`}>{t.preventive_tab}</button>
                   </div>
                   
                   <div className="p-6">
@@ -353,23 +353,23 @@ export default function ScannerPage() {
                         {treatmentPlan.organic.map((t: any, i: number) => {
                            const isRecommended = t.name === [...treatmentPlan.organic].sort((a,b) => b.ecoScore - a.ecoScore)[0]?.name;
                            return (
-                             <div key={i} className={`p-4 rounded-xl border ${isRecommended ? "bg-green-50 border-green-200 ring-1 ring-green-500/20" : "bg-white border-gray-200"}`}>
-                               <div className="flex justify-between items-start mb-3">
+                             <div key={i} className={`p-5 rounded-2xl border transition-all ${isRecommended ? "bg-[#00E599]/10 border-[#00E599]/30 shadow-[0_0_20px_rgba(0,229,153,0.1)]" : "bg-white/5 border-white/10"}`}>
+                               <div className="flex justify-between items-start mb-4">
                                  <div>
-                                   <div className="flex items-center gap-2">
-                                     <h4 className="font-bold text-gray-900">{t.name}</h4>
-                                     {isRecommended && <span className="text-[10px] uppercase tracking-wider font-bold bg-green-600 text-white px-2 py-0.5 rounded-full">Recommended</span>}
+                                   <div className="flex items-center gap-3">
+                                     <h4 className="font-black text-white text-lg">{t.name}</h4>
+                                     {isRecommended && <span className="text-[10px] uppercase tracking-widest font-black bg-[#00E599] text-black px-2.5 py-1 rounded-lg shadow-lg">Recommended</span>}
                                    </div>
                                  </div>
-                                 <div className="flex items-center gap-1 bg-green-100 px-2.5 py-1 rounded-md shrink-0">
-                                   <Leaf className="h-3.5 w-3.5 text-green-700" />
-                                   <span className="text-xs font-bold text-green-800">Score: {t.ecoScore}/10</span>
+                                 <div className="flex items-center gap-1.5 bg-[#00E599]/20 px-2.5 py-1.5 rounded-lg border border-[#00E599]/20 shrink-0">
+                                   <Leaf className="h-4 w-4 text-[#00E599]" />
+                                   <span className="text-xs font-black text-[#00E599]">Eco: {t.ecoScore}/10</span>
                                  </div>
                                </div>
-                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600">
-                                 <div><span className="font-medium text-gray-900">Method:</span> {t.method}</div>
-                                 <div><span className="font-medium text-gray-900">Frequency:</span> {t.frequency}</div>
-                                 <div className="sm:col-span-2"><span className="font-medium text-gray-900">Estimated Cost:</span> {t.cost}</div>
+                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                 <div className="flex flex-col"><span className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Method</span> <span className="text-white/80 font-medium">{t.method}</span></div>
+                                 <div className="flex flex-col"><span className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Frequency</span> <span className="text-white/80 font-medium">{t.frequency}</span></div>
+                                 <div className="sm:col-span-2 flex flex-col"><span className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Estimated Cost</span> <span className="text-white/80 font-medium">{t.cost}</span></div>
                                </div>
                              </div>
                            );
@@ -379,17 +379,19 @@ export default function ScannerPage() {
 
                     {activeTab === "chemical" && (
                       <div className="space-y-6">
-                        <div className="bg-amber-100 text-amber-800 p-3 rounded-lg flex gap-3 text-sm border border-amber-200">
+                        <div className="bg-amber-500/10 text-amber-400 p-4 rounded-2xl flex gap-3 text-sm border border-amber-500/20">
                           <AlertTriangle className="h-5 w-5 shrink-0" />
-                          <p>{t.chemical_warning}</p>
+                          <p className="font-medium">{t.chemical_warning}</p>
                         </div>
                         {treatmentPlan.chemical.map((t: any, i: number) => (
-                           <div key={i} className="p-4 rounded-xl border border-gray-200 bg-white space-y-3">
-                             <h4 className="font-bold text-gray-900">{t.name}</h4>
-                             <p className="text-sm text-red-600 bg-red-50 p-2 rounded border border-red-100 font-medium">{t.impactWarning}</p>
-                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600 mt-2">
-                               <div><span className="font-medium text-gray-900">Dosage:</span> {t.dosage}</div>
-                               <div><span className="font-medium text-gray-900">Safety:</span> {t.safety}</div>
+                           <div key={i} className="p-5 rounded-2xl border border-white/5 bg-white/5 space-y-4">
+                             <h4 className="font-black text-white text-lg">{t.name}</h4>
+                             <p className="text-xs text-red-400 bg-red-400/10 p-3 rounded-xl border border-red-400/20 font-bold uppercase tracking-wide flex items-center gap-2">
+                               <AlertTriangle className="w-4 h-4" /> {t.impactWarning}
+                             </p>
+                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                               <div className="flex flex-col"><span className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Dosage</span> <span className="text-white/80 font-medium">{t.dosage}</span></div>
+                               <div className="flex flex-col"><span className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Safety</span> <span className="text-white/80 font-medium">{t.safety}</span></div>
                              </div>
                            </div>
                         ))}
@@ -397,11 +399,11 @@ export default function ScannerPage() {
                     )}
 
                     {activeTab === "preventive" && (
-                      <ul className="space-y-3">
+                        <ul className="space-y-4">
                         {treatmentPlan.preventive.map((t: string, i: number) => (
-                          <li key={i} className="flex gap-3 bg-blue-50/50 p-3 rounded-lg border border-blue-100">
-                            <CheckCircle2 className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
-                            <span className="text-gray-700 text-sm leading-relaxed">{t}</span>
+                          <li key={i} className="flex gap-4 bg-blue-500/10 p-4 rounded-2xl border border-blue-500/20">
+                            <CheckCircle2 className="h-6 w-6 text-blue-500 shrink-0 mt-0.5" />
+                            <span className="text-white/80 text-base leading-relaxed font-medium">{t}</span>
                           </li>
                         ))}
                       </ul>
@@ -413,12 +415,12 @@ export default function ScannerPage() {
           </Card>
           )}
 
-          <div className="flex gap-4 justify-center pt-4">
-            <Button variant="outline" onClick={() => { setFile(null); setPreview(null); setResult(null); }}>
+          <div className="flex gap-4 justify-center pt-8">
+            <Button variant="outline" onClick={() => { setFile(null); setPreview(null); setResult(null); }} className="border-white/10 text-white hover:bg-white/5 px-8 h-12 rounded-xl font-bold">
               {t.btn_scan_another}
             </Button>
             <Link href={`/advisor?plant=${encodeURIComponent(result.plant)}&disease=${encodeURIComponent(result.disease)}`}>
-              <Button className="bg-green-600 hover:bg-green-700">
+              <Button className="bg-[#00E599] hover:bg-[#00c986] text-black px-8 h-12 rounded-xl font-bold shadow-lg">
                 {t.btn_ask_advisor}
               </Button>
             </Link>

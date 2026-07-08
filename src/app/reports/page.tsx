@@ -46,16 +46,16 @@ export default function ReportsPage() {
       <div className="print:hidden space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{t.reports_ecosystem}</h1>
-            <p className="text-gray-500">{t.reports_desc}</p>
+            <h1 className="text-3xl font-bold text-white">{t.reports_ecosystem}</h1>
+            <p className="text-white/40">{t.reports_desc}</p>
           </div>
           <div className="flex gap-3">
-            <Button onClick={handleGenerate} disabled={isGenerating} className="bg-[#0f4c3a] hover:bg-[#0a3629]">
+            <Button onClick={handleGenerate} disabled={isGenerating} className="bg-[#00E599] hover:bg-[#00c986] text-black font-bold">
               {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sprout className="mr-2 h-4 w-4" />}
               {t.btn_generate_full_report}
             </Button>
             {report && (
-              <Button onClick={handlePrint} variant="outline" className="border-[#0f4c3a] text-[#0f4c3a]">
+              <Button onClick={handlePrint} variant="outline" className="border-white/10 text-white/60 hover:bg-white/5">
                 <FileDown className="mr-2 h-4 w-4" /> {t.btn_download_pdf}
               </Button>
             )}
@@ -64,30 +64,30 @@ export default function ReportsPage() {
 
         {/* Impact Summary */}
         <div className="grid md:grid-cols-3 gap-6">
-          <Card className="bg-green-50/50 border-green-100">
+          <Card className="bg-white/5 border-white/10 backdrop-blur-md">
             <CardContent className="p-6 flex items-center gap-4">
-              <div className="p-3 bg-green-100 rounded-lg text-green-600"><Sprout className="h-6 w-6"/></div>
+              <div className="p-3 bg-green-500/10 rounded-lg text-green-500"><Sprout className="h-6 w-6"/></div>
               <div>
-                <p className="text-sm font-medium text-gray-500">{t.label_crops_saved}</p>
-                <h3 className="text-2xl font-bold text-gray-900">~2.4 Tons</h3>
+                <p className="text-sm font-medium text-white/40">{t.label_crops_saved}</p>
+                <h3 className="text-2xl font-bold text-white">~2.4 Tons</h3>
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-blue-50/50 border-blue-100">
+          <Card className="bg-white/5 border-white/10 backdrop-blur-md">
             <CardContent className="p-6 flex items-center gap-4">
-              <div className="p-3 bg-blue-100 rounded-lg text-blue-600"><HeartPulse className="h-6 w-6"/></div>
+              <div className="p-3 bg-blue-500/10 rounded-lg text-blue-500"><HeartPulse className="h-6 w-6"/></div>
               <div>
-                <p className="text-sm font-medium text-gray-500">{t.label_chemical_reduction}</p>
-                <h3 className="text-2xl font-bold text-gray-900">42%</h3>
+                <p className="text-sm font-medium text-white/40">{t.label_chemical_reduction}</p>
+                <h3 className="text-2xl font-bold text-white">42%</h3>
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-amber-50/50 border-amber-100">
+          <Card className="bg-white/5 border-white/10 backdrop-blur-md">
             <CardContent className="p-6 flex items-center gap-4">
-              <div className="p-3 bg-amber-100 rounded-lg text-amber-600"><BadgeDollarSign className="h-6 w-6"/></div>
+              <div className="p-3 bg-amber-500/10 rounded-lg text-amber-500"><BadgeDollarSign className="h-6 w-6"/></div>
               <div>
-                <p className="text-sm font-medium text-gray-500">{t.label_income_boost}</p>
-                <h3 className="text-2xl font-bold text-gray-900">+15.5%</h3>
+                <p className="text-sm font-medium text-white/40">{t.label_income_boost}</p>
+                <h3 className="text-2xl font-bold text-white">+15.5%</h3>
               </div>
             </CardContent>
           </Card>
@@ -96,7 +96,7 @@ export default function ReportsPage() {
 
       {/* Printable Report Area */}
       {report && (
-        <Card className="print:shadow-none print:border-none print:m-0 animate-in fade-in slide-in-from-bottom-4">
+        <Card className="bg-white border-none shadow-2xl print:shadow-none print:border-none print:m-0 animate-in fade-in slide-in-from-bottom-4">
           <CardHeader className="border-b border-gray-100 bg-gray-50/50 print:bg-transparent">
             <CardTitle className="text-2xl text-[#0f4c3a]">{t.report_title}</CardTitle>
             <p className="text-sm text-gray-500 mt-1">{t.report_generated} {langMap[lang] || "English"}</p>

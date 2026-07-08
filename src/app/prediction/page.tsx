@@ -116,9 +116,9 @@ export default function PredictionPage() {
   };
 
   const getRiskColor = (level: string) => {
-    if (level === "high") return "text-red-800 bg-red-100 border-red-200";
-    if (level === "medium") return "text-amber-800 bg-amber-100 border-amber-200";
-    return "text-green-800 bg-green-100 border-green-200";
+    if (level === "high") return "text-red-400 bg-red-400/10 border-red-400/20";
+    if (level === "medium") return "text-amber-400 bg-amber-400/10 border-amber-400/20";
+    return "text-green-400 bg-green-400/10 border-green-400/20";
   };
 
   const getBarColor = (risk: number) => {
@@ -232,9 +232,9 @@ export default function PredictionPage() {
 
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Chart */}
-                <Card className="border-gray-200">
+                <Card className="border-white/10 bg-white/5 backdrop-blur-xl">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">{t.chart_timeline_title}</CardTitle>
+                    <CardTitle className="text-lg text-white/80">{t.chart_timeline_title}</CardTitle>
                   </CardHeader>
                   <CardContent className="h-[250px] w-full">
                     {result.chartData && (
@@ -257,9 +257,9 @@ export default function PredictionPage() {
                 </Card>
 
                 {/* Top Threats */}
-                <Card className="border-gray-200">
+                <Card className="border-white/10 bg-white/5 backdrop-blur-xl">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">{t.predicted_threats_title}</CardTitle>
+                    <CardTitle className="text-lg text-white/80">{t.predicted_threats_title}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {result.predicted_diseases?.map((disease: any, i: number) => (

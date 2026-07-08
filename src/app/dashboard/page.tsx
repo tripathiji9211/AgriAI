@@ -38,7 +38,7 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-green-100/60 via-slate-50 to-emerald-100/40 p-4 md:p-8 relative overflow-hidden pb-24">
+    <div className="min-h-screen p-4 md:p-8 relative overflow-hidden pb-24">
       {/* Luminous Orbs for Premium Glassmorphism Effect */}
       <motion.div 
         animate={{ 
@@ -96,7 +96,7 @@ export default function DashboardPage() {
             animate={{ opacity: 1, x: 0 }}
             className="space-y-2"
           >
-            <h1 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight font-serif drop-shadow-sm flex items-center gap-3">
+            <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight font-serif drop-shadow-sm flex items-center gap-3">
               {t.dash_title}
               <motion.div
                 animate={{ 
@@ -108,14 +108,14 @@ export default function DashboardPage() {
                 <Sprout className="w-10 h-10 text-[#00E599] neon-glow" />
               </motion.div>
             </h1>
-            <p className="text-gray-600 font-medium text-lg">{t.dash_welcome}</p>
+            <p className="text-white/60 font-medium text-lg">{t.dash_welcome}</p>
           </motion.div>
           <motion.div 
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            className="w-12 h-12 bg-white/60 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.06)] cursor-pointer hover:bg-white/80 transition-all relative"
+            className="w-12 h-12 bg-white/5 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/10 shadow-2xl cursor-pointer hover:bg-white/10 transition-all relative"
           >
-            <Bell className="w-5 h-5 text-[#0f4c3a]" />
+            <Bell className="w-5 h-5 text-[#00E599] neon-glow" />
             <div className="absolute top-3 right-3.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white shadow-sm" />
           </motion.div>
         </div>
@@ -124,7 +124,7 @@ export default function DashboardPage() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative h-48 md:h-64 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl group bg-[#0f4c3a]"
+          className="relative h-48 md:h-64 rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl group bg-[#0f4c3a]"
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
           <Image 
@@ -188,7 +188,7 @@ export default function DashboardPage() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: idx * 0.1 }}
               whileHover={{ y: -5 }}
-              className="bg-white/40 backdrop-blur-xl border border-white/80 shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] rounded-3xl p-5 flex flex-col items-center justify-center text-center group hover:bg-white/70 transition-all duration-500 cursor-default relative overflow-hidden"
+              className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl p-5 flex flex-col items-center justify-center text-center group hover:bg-white/10 transition-all duration-500 cursor-default relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className={`p-3.5 ${metric.colorClass} rounded-2xl mb-4 group-hover:rotate-12 transition-transform duration-300 shadow-sm relative z-10`}>
@@ -199,8 +199,8 @@ export default function DashboardPage() {
                   <metric.icon className="h-6 w-6" />
                 </motion.div>
               </div>
-              <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1.5 relative z-10">{metric.label}</p>
-              <h4 className="text-2xl font-black text-gray-900 mb-2 tracking-tight relative z-10">{metric.value}</h4>
+              <p className="text-xs text-white/40 font-bold uppercase tracking-widest mb-1.5 relative z-10">{metric.label}</p>
+              <h4 className="text-2xl font-black text-white mb-2 tracking-tight relative z-10">{metric.value}</h4>
               <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm relative z-10 ${metric.statClass}`}>{metric.stat}</span>
             </motion.div>
           ))}
@@ -211,7 +211,7 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white/50 backdrop-blur-2xl border border-white/80 shadow-[0_8px_32px_0_rgba(31,38,135,0.05)] rounded-[2.5rem] p-6 md:p-8 relative overflow-hidden group"
+          className="bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-[2.5rem] p-6 md:p-8 relative overflow-hidden group"
         >
           <div className="absolute top-0 right-0 p-4">
              <div className="flex items-center gap-2 bg-green-100/80 text-green-700 text-[10px] font-black uppercase tracking-tighter px-2.5 py-1 rounded-full border border-green-200">
@@ -222,7 +222,7 @@ export default function DashboardPage() {
 
           <div className="flex flex-col md:flex-row gap-8 items-center">
             <div className="w-full md:w-1/3 relative aspect-square rounded-3xl overflow-hidden shadow-xl border-4 border-white/60">
-              <Image src="/sensor-icon.png" alt="Sensor" fill className="object-cover" />
+              <img src="https://images.unsplash.com/photo-1628352081506-83c43123ed6d?auto=format&fit=crop&q=80&w=1000" alt="Smart IoT Sensor" className="object-cover w-full h-full" />
               <div className="absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent" />
             </div>
 
@@ -232,8 +232,8 @@ export default function DashboardPage() {
                   <Database className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-gray-900 uppercase tracking-wide">Kaggle Dataset Sync</h3>
-                  <p className="text-xs text-gray-500 font-bold flex items-center gap-1.5">
+                  <h3 className="text-xl font-black text-white uppercase tracking-wide">Kaggle Dataset Sync</h3>
+                  <p className="text-xs text-white/40 font-bold flex items-center gap-1.5">
                     {isRefreshing ? <RefreshCcw className="w-3 h-3 animate-spin" /> : <Clock className="w-3 h-3" />}
                     {liveData?.feed_name || "Connecting to dataset..."} • Last sync: {liveData?.last_sync || "..."}
                   </p>
@@ -248,15 +248,15 @@ export default function DashboardPage() {
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.1 }}
-                      className="bg-white/60 p-4 rounded-2xl border border-white shadow-sm flex justify-between items-center hover:bg-white/90 transition-all cursor-default group/item"
+                      className="bg-white/5 p-4 rounded-2xl border border-white/5 shadow-sm flex justify-between items-center hover:bg-white/10 transition-all cursor-default group/item"
                     >
                       <div>
-                        <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{item.label}</p>
-                        <p className="text-lg font-black text-gray-900">{item.value} <span className="text-xs font-medium text-gray-500">{item.unit}</span></p>
+                        <p className="text-[10px] text-white/30 font-black uppercase tracking-widest">{item.label}</p>
+                        <p className="text-lg font-black text-white">{item.value} <span className="text-xs font-medium text-white/40">{item.unit}</span></p>
                       </div>
                       <div className="text-right">
-                        <span className="text-[9px] font-black bg-blue-50 text-blue-600 px-2 py-0.5 rounded border border-blue-100 block mb-1">DATASET</span>
-                        <span className="text-[10px] font-bold text-gray-400 italic group-hover/item:text-blue-500 transition-colors">{item.source.split(':')[1]}</span>
+                        <span className="text-[9px] font-black bg-[#00E599]/10 text-[#00E599] px-2 py-0.5 rounded border border-[#00E599]/20 block mb-1">DATASET</span>
+                        <span className="text-[10px] font-bold text-white/20 italic group-hover/item:text-[#00E599] transition-colors">{item.source.split(':')[1]}</span>
                       </div>
                     </motion.div>
                   ))}
@@ -337,9 +337,9 @@ export default function DashboardPage() {
 
         {/* Vertical Feed Section */}
         <div className="mt-6 relative z-10">
-          <div className="flex items-center gap-3 mb-8 bg-white/40 backdrop-blur-md px-5 py-3 rounded-2xl w-fit border border-white/60 shadow-sm">
-            <Activity className="w-5 h-5 text-[#0f4c3a]" />
-            <h2 className="text-xl font-black text-gray-900 uppercase tracking-widest">{t.feed_title}</h2>
+          <div className="flex items-center gap-3 mb-8 bg-white/5 backdrop-blur-md px-5 py-3 rounded-2xl w-fit border border-white/10 shadow-2xl">
+            <Activity className="w-5 h-5 text-[#00E599]" />
+            <h2 className="text-xl font-black text-white uppercase tracking-widest">{t.feed_title}</h2>
           </div>
 
           <div className="space-y-8 relative before:absolute before:inset-0 before:ml-6 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-green-200/50 before:via-teal-200/50 before:to-transparent before:rounded-full">
@@ -349,14 +349,14 @@ export default function DashboardPage() {
               <div className="flex items-center justify-center w-12 h-12 rounded-2xl shadow-[0_4px_20px_rgba(245,158,11,0.3)] border border-amber-200 bg-gradient-to-br from-amber-100 to-amber-50 text-amber-600 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 relative left-0 md:left-1/2 md:-ml-6 transition-transform group-hover:scale-110 duration-300">
                 <AlertTriangle className="w-5 h-5" />
               </div>
-              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-white/70 backdrop-blur-2xl border border-white/80 shadow-[0_8px_32px_0_rgba(31,38,135,0.06)] p-6 rounded-[2rem] ml-4 md:ml-0 hover:bg-white/90 transition-all duration-300 hover:shadow-[0_8px_32px_0_rgba(31,38,135,0.1)] relative overflow-hidden">
+              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl p-6 rounded-[2rem] ml-4 md:ml-0 hover:bg-white/10 transition-all duration-300 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-amber-400 to-amber-300" />
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[11px] font-black text-amber-600 uppercase tracking-widest bg-amber-50 px-2.5 py-1 rounded-md border border-amber-100">{t.alert_weather}</span>
-                  <span className="text-xs text-gray-400 font-bold flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Just now</span>
+                  <span className="text-[11px] font-black text-amber-500 uppercase tracking-widest bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/20">{t.alert_weather}</span>
+                  <span className="text-xs text-white/30 font-bold flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Just now</span>
                 </div>
-                <h3 className="text-lg font-black text-gray-900 mb-2">{t.alert_humidity}</h3>
-                <p className="text-sm text-gray-600 mb-5 leading-relaxed font-medium">{t.alert_humidity_desc}</p>
+                <h3 className="text-lg font-black text-white mb-2">{t.alert_humidity}</h3>
+                <p className="text-sm text-white/60 mb-5 leading-relaxed font-medium">{t.alert_humidity_desc}</p>
                 <Link href="/scanner">
                   <Button className="w-full bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-600 hover:to-amber-500 text-white rounded-xl shadow-lg shadow-amber-500/20 py-6 text-base font-bold transition-all hover:scale-[1.02]">
                     {t.btn_scan_now} <ChevronRight className="w-5 h-5 ml-1" />
@@ -370,20 +370,20 @@ export default function DashboardPage() {
               <div className="flex items-center justify-center w-12 h-12 rounded-2xl shadow-[0_4px_20px_rgba(16,185,129,0.2)] border border-green-200 bg-gradient-to-br from-green-100 to-green-50 text-green-600 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 relative left-0 md:left-1/2 md:-ml-6 transition-transform group-hover:scale-110 duration-300">
                 <Leaf className="w-5 h-5" />
               </div>
-              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-white/50 backdrop-blur-2xl border border-white/60 shadow-[0_4px_20px_rgb(0,0,0,0.03)] p-6 rounded-[2rem] ml-4 md:ml-0 hover:bg-white/70 transition-all duration-300 relative overflow-hidden">
+              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl p-6 rounded-[2rem] ml-4 md:ml-0 hover:bg-white/10 transition-all duration-300 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-green-400/10 rounded-full blur-2xl pointer-events-none" />
                 <div className="flex items-center justify-between mb-3 relative z-10">
-                  <span className="text-[11px] font-black text-green-700 uppercase tracking-widest bg-green-50 px-2.5 py-1 rounded-md border border-green-100">{t.alert_scan_complete}</span>
-                  <span className="text-xs text-gray-400 font-bold flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> 2 hours ago</span>
+                  <span className="text-[11px] font-black text-green-500 uppercase tracking-widest bg-green-500/10 px-2.5 py-1 rounded-md border border-green-500/20">{t.alert_scan_complete}</span>
+                  <span className="text-xs text-white/30 font-bold flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> 2 hours ago</span>
                 </div>
-                <h3 className="text-lg font-black text-gray-900 mb-3 relative z-10">Tomato Leaf Diagnosed</h3>
-                <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 flex items-center gap-4 border border-white shadow-sm relative z-10">
+                <h3 className="text-lg font-black text-white mb-3 relative z-10">Tomato Leaf Diagnosed</h3>
+                <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 flex items-center gap-4 border border-white/10 shadow-sm relative z-10">
                   <div className="bg-green-100/50 p-2 rounded-xl">
                     <CheckCircle2 className="w-8 h-8 text-green-600 shrink-0" />
                   </div>
                   <div>
-                    <p className="text-base font-black text-gray-900">{t.alert_healthy}</p>
-                    <p className="text-xs text-gray-500 font-medium mt-0.5">{t.alert_no_action}</p>
+                    <p className="text-base font-black text-white">{t.alert_healthy}</p>
+                    <p className="text-xs text-white/40 font-medium mt-0.5">{t.alert_no_action}</p>
                   </div>
                 </div>
               </div>
@@ -394,14 +394,14 @@ export default function DashboardPage() {
               <div className="flex items-center justify-center w-12 h-12 rounded-2xl shadow-[0_4px_20px_rgba(59,130,246,0.2)] border border-blue-200 bg-gradient-to-br from-blue-100 to-blue-50 text-blue-600 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 relative left-0 md:left-1/2 md:-ml-6 transition-transform group-hover:scale-110 duration-300">
                 <Activity className="w-5 h-5" />
               </div>
-              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-white/50 backdrop-blur-2xl border border-white/60 shadow-[0_4px_20px_rgb(0,0,0,0.03)] p-6 rounded-[2rem] ml-4 md:ml-0 hover:bg-white/70 transition-all duration-300 relative overflow-hidden">
+              <div className="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl p-6 rounded-[2rem] ml-4 md:ml-0 hover:bg-white/10 transition-all duration-300 relative overflow-hidden">
                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-400/10 rounded-full blur-2xl pointer-events-none" />
                 <div className="flex items-center justify-between mb-3 relative z-10">
-                  <span className="text-[11px] font-black text-blue-700 uppercase tracking-widest bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">{t.alert_eco_insight}</span>
-                  <span className="text-xs text-gray-400 font-bold flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Yesterday</span>
+                  <span className="text-[11px] font-black text-blue-400 uppercase tracking-widest bg-blue-400/10 px-2.5 py-1 rounded-md border border-blue-400/20">{t.alert_eco_insight}</span>
+                  <span className="text-xs text-white/30 font-bold flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Yesterday</span>
                 </div>
-                <h3 className="text-lg font-black text-gray-900 mb-2 relative z-10">{t.alert_pesticide_down}</h3>
-                <p className="text-sm text-gray-600 mb-5 font-medium leading-relaxed relative z-10">{t.alert_pesticide_desc}</p>
+                <h3 className="text-lg font-black text-white mb-2 relative z-10">{t.alert_pesticide_down}</h3>
+                <p className="text-sm text-white/60 mb-5 font-medium leading-relaxed relative z-10">{t.alert_pesticide_desc}</p>
                 <div className="w-full bg-blue-100/50 rounded-full h-3 border border-white relative z-10 overflow-hidden shadow-inner">
                   <div className="bg-gradient-to-r from-blue-400 to-blue-500 h-full rounded-full w-[60%] relative">
                     <div className="absolute inset-0 bg-white/20 w-full h-full animate-[pulse_2s_ease-in-out_infinite]" />

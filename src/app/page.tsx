@@ -267,8 +267,8 @@ export default function LandingPage() {
 
             {/* Column 2 */}
             <div>
-              <h4 className="font-bold font-serif text-gray-900 text-lg mb-4">{t.built_for}</h4>
-              <ul className="space-y-3 text-gray-600">
+              <h4 className="font-bold font-serif text-white text-lg mb-4">{t.built_for}</h4>
+              <ul className="space-y-3 text-white/60">
                 <li className="flex items-center gap-2"><span>🌾</span> {t.farmers_type}</li>
                 <li className="flex items-center gap-2"><span>🔬</span> {t.researchers_type}</li>
                 <li className="flex items-center gap-2"><span>🤝</span> {t.orgs_type}</li>
@@ -278,8 +278,8 @@ export default function LandingPage() {
 
             {/* Column 3 */}
             <div>
-              <h4 className="font-bold font-serif text-gray-900 text-lg mb-4">{t.platform}</h4>
-              <ul className="space-y-3 text-gray-600">
+              <h4 className="font-bold font-serif text-white text-lg mb-4">{t.platform}</h4>
+              <ul className="space-y-3 text-white/60">
                 <li><Link href="/scanner" className="hover:text-[#00E599] transition-colors">{t.nav_detection}</Link></li>
                 <li><Link href="/prediction" className="hover:text-[#00E599] transition-colors">{t.nav_prediction}</Link></li>
                 <li><Link href="/mandi" className="hover:text-[#00E599] transition-colors">{t.nav_mandi}</Link></li>
@@ -291,8 +291,8 @@ export default function LandingPage() {
           </div>
 
           {/* Copyright Bottom Bar */}
-          <div className="border-t border-gray-200 pt-8 text-center">
-            <p className="text-sm text-gray-400">
+          <div className="border-t border-white/5 pt-8 text-center">
+            <p className="text-sm text-white/30">
               © 2026 {t.appName}. Empowering sustainable agriculture.
             </p>
           </div>

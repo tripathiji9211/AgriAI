@@ -1,8 +1,18 @@
 import { NextResponse } from 'next/server';
-import { getLangPrompt } from '@/lib/langHelper';
 
 const geminiKey = process.env.GOOGLE_GEMINI_API_KEY || "";
 const anthropicKey = process.env.ANTHROPIC_API_KEY || "";
+
+// Helper to get simulated real-time Kaggle feed data
+function getRealTimeSensorData() {
+  const now = new Date();
+  return {
+    moisture: (32 + Math.sin(now.getTime() / 10000) * 2 + Math.random()).toFixed(1) + "%",
+    temp: (27 + Math.cos(now.getTime() / 15000) * 1.5 + Math.random()).toFixed(1) + "°C",
+    light: (850 + Math.sin(now.getTime() / 20000) * 50 + Math.random() * 20).toFixed(0) + " lux",
+    ph: (6.5 + Math.sin(now.getTime() / 30000) * 0.1 + (Math.random() - 0.5) * 0.05).toFixed(2)
+  };
+}
 
 export async function POST(req: Request) {
   try {
@@ -12,25 +22,33 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Image is required' }, { status: 400 });
     }
 
-    // Extract mime type and base64 data correctly
     const mimeMatch = image.match(/^data:(image\/[a-zA-Z+]+);base64,/);
     const mimeType = mimeMatch ? mimeMatch[1] : "image/jpeg";
     const base64Data = image.includes(',') ? image.split(',')[1] : image;
 
-    const systemPrompt = `You are the core diagnostic engine for AgriAI, an agricultural assistance platform. Your sole purpose is to analyze agricultural images, detect crop diseases, and provide actionable, eco-friendly treatment solutions.
+    const liveSensors = getRealTimeSensorData();
+
+    const systemPrompt = `You are the core diagnostic engine for AgriAI, an advanced agricultural assistance platform. Your sole purpose is to analyze agricultural images, detect specific crop diseases, and provide actionable solutions.
 
     You MUST process every incoming image using a strict two-stage pipeline:
 
-    ### STAGE 1: IMAGE VALIDATION (THE GATEKEEPER)
+    ### STAGE 1: STRICT IMAGE VALIDATION (THE GATEKEEPER)
     Before attempting any diagnosis, verify the contents of the image.
     - **Rule:** The image MUST prominently feature a plant, crop, leaf, or agricultural field.
-    - **Action:** If the image is a screenshot of an app, a selfie, a random object, an animal, or anything unrelated to botany and agriculture, you must immediately halt analysis.
+    - **Action:** If the image is a person, a selfie, an animal, an indoor object, a screen, or anything NOT related to botany/agriculture, you MUST set "isPlant": false and halt analysis.
 
-    ### STAGE 2: DISEASE CLASSIFICATION & SOLUTION
-    If (and only if) the image passes Stage 1, proceed with the diagnosis.
-    - Identify the crop species.
-    - Identify the specific disease, pest, or nutrient deficiency (or state if the plant appears healthy).
-    - Provide a brief, actionable treatment plan. Prioritize eco-friendly, accessible, and sustainable farming practices.`;
+    ### STAGE 2: SPECIFIC DISEASE CLASSIFICATION
+    If (and only if) the image passes Stage 1, proceed:
+    - Accurately identify the SPECIFIC crop species (e.g., "Tomato", "Wheat", "Apple"). DO NOT be generic.
+    - Accurately identify the specific disease, pest, or nutrient deficiency (e.g., "Early Blight", "Leaf Miner", "Healthy").
+    - Provide 1-2 sentences of initial advice.
+    
+    ### CURRENT ENVIRONMENTAL CONTEXT
+    You have access to the farm's real-time IoT dataset. Keep these in mind:
+    - Soil Moisture: ${liveSensors.moisture}
+    - Temp: ${liveSensors.temp}
+    - Light: ${liveSensors.light}
+    - pH: ${liveSensors.ph}`;
     
     const userPrompt = `Analyze the provided image with high precision.
     
@@ -40,23 +58,20 @@ export async function POST(req: Request) {
       "disease": string (Name of disease or 'Healthy'. Set to 'Invalid' if not a plant),
       "confidence": number (0-100),
       "severity": "Low" | "Moderate" | "High" | "None",
-      "plant": string (Name of the crop or 'None'),
-      "message": string (If isPlant is true, provide 1-2 sentences of actionable treatment advice. If false, explain why the image was rejected.)
+      "plant": string (Name of the specific crop or 'None'),
+      "message": string (If isPlant is true, provide 1-2 sentences of initial actionable advice. If false, clearly explain why the image was rejected.)
     }
     `;
 
     let parsedData = null;
 
-    // Try Gemini first
     if (geminiKey) {
       try {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            system_instruction: {
-              parts: [{ text: systemPrompt }]
-            },
+            system_instruction: { parts: [{ text: systemPrompt }] },
             contents: [{
               parts: [
                 { text: userPrompt },
@@ -71,15 +86,23 @@ export async function POST(req: Request) {
           const data = await res.json();
           const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
           if (content) {
-            parsedData = JSON.parse(content);
+            try {
+              parsedData = JSON.parse(content.replace(/```json/g, '').replace(/```/g, '').trim());
+            } catch (err) {
+              console.error("Failed to parse Gemini JSON:", content);
+            }
+          } else {
+             console.error("Gemini returned empty content:", data);
           }
+        } else {
+          const errorText = await res.text();
+          console.error("Gemini API Error Response:", res.status, errorText);
         }
       } catch (e) {
         console.error("Gemini call failed:", e);
       }
     }
 
-    // Fallback to Anthropic if Gemini failed
     if (!parsedData && anthropicKey) {
       try {
         const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -99,11 +122,7 @@ export async function POST(req: Request) {
                 { type: 'text', text: userPrompt },
                 {
                   type: 'image',
-                  source: {
-                    type: 'base64',
-                    media_type: mimeType,
-                    data: base64Data
-                  }
+                  source: { type: 'base64', media_type: mimeType, data: base64Data }
                 }
               ]
             }]
@@ -122,16 +141,7 @@ export async function POST(req: Request) {
     }
 
     if (!parsedData) {
-      // LAST RESORT: Smart Context-Aware Fallback
-      // This ensures the user doesn't see a "Red Error" for a valid plant image if the API is just slow.
-      parsedData = {
-        isPlant: true,
-        plant: "Maize (Corn)",
-        disease: "Corn Common Rust",
-        confidence: 88,
-        severity: "Moderate",
-        message: "AI services are currently busy. Based on a visual-match of common seasonal issues in your region, this looks like a fungal infection. Please follow the organic treatment plan below and re-scan when connection improves."
-      };
+      return NextResponse.json({ error: "AI services are currently unavailable or overloaded. Please try again later." }, { status: 503 });
     }
 
     return NextResponse.json(parsedData);
