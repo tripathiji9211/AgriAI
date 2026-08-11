@@ -31,10 +31,13 @@ export async function updateSession(request: NextRequest) {
   // supabase.auth.getUser(). A simple mistake could make it very hard to debug
   // issues with cross-browser cookies.
   
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
+  let user = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch (error) {
+    console.error("Supabase unreachable in middleware (offline mode):", error);
+  }
   // Protect private routes if !user
   const protectedRoutes = ['/dashboard', '/profile', '/prediction', '/reports', '/scanner', '/iot', '/sustainability', '/advisor', '/mandi'];
   const isProtected = protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route));
