@@ -2,25 +2,36 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url)
-  const code = searchParams.get('code')
-  // if "next" is in param, use it as the redirect URL
-  const next = searchParams.get('next') ?? '/dashboard'
+  const requestUrl = new URL(request.url)
+  const code = requestUrl.searchParams.get('code')
+  const next = requestUrl.searchParams.get('next') ?? '/dashboard'
 
-  if (code) {
-    const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    
-    if (!error) {
-      const response = NextResponse.redirect(`${origin}${next}`)
-      // Ensure cookies are passed through to the redirect response
-      return response
-    }
-
-    // Redirect to login with the actual error message for debugging
-    return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(error.message)}`)
+  // Handle forwarded headers for Vercel/reverse proxy deployments
+  const forwardedHost = request.headers.get('x-forwarded-host')
+  const forwardedProto = request.headers.get('x-forwarded-proto')
+  
+  let origin = requestUrl.origin
+  if (forwardedHost) {
+    const proto = forwardedProto || 'https'
+    origin = `${proto}://${forwardedHost}`
   }
 
-  // return the user to an error page with some instructions
+  if (code) {
+    try {
+      const supabase = await createClient()
+      const { error } = await supabase.auth.exchangeCodeForSession(code)
+      
+      if (!error) {
+        return NextResponse.redirect(`${origin}${next}`)
+      }
+
+      console.error("Auth Callback Error:", error.message)
+      return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(error.message)}`)
+    } catch (err: any) {
+      console.error("Auth Callback Exception:", err)
+      return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(err.message || 'Authentication failed')}`)
+    }
+  }
+
   return NextResponse.redirect(`${origin}/login?error=no_code`)
 }

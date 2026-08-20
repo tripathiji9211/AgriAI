@@ -31,20 +31,27 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
+    try {
+      const redirectUrl = `${window.location.origin}/auth/callback`;
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         },
-      },
-    });
+      });
 
-    if (error) {
-      console.error("Auth Error:", error.message);
-      alert(`Google Login Error: ${error.message}\n(Make sure Google provider is enabled in your Supabase dashboard)`);
+      if (error) {
+        console.error("Auth Error:", error.message);
+        alert(`Google Login Error: ${error.message}\n\nTroubleshooting:\n1. Ensure Google Provider is enabled in Supabase Dashboard -> Authentication -> Providers.\n2. Ensure "${redirectUrl}" is added to Redirect URLs in Supabase Auth Settings.`);
+        setIsLoading(false);
+      }
+    } catch (e: any) {
+      console.error("Unexpected OAuth error:", e);
+      alert(`Google Login Connection Error: ${e.message || "Failed to reach authentication provider"}`);
       setIsLoading(false);
     }
   };
